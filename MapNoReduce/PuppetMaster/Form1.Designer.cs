@@ -78,7 +78,7 @@
             this.commandLabel.Size = new System.Drawing.Size(54, 13);
             this.commandLabel.TabIndex = 5;
             this.commandLabel.Text = "Command";
-            this.commandLabel.Click += new System.EventHandler(this.label2_Click);
+            this.commandLabel.Click += new System.EventHandler(this.runScriptClick);
             // 
             // commandTextBox
             // 

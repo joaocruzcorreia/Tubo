@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker", "MapNoReduce\Worker.csproj", "{FB141800-0334-4930-B12D-B4BA26CEE797}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{92DE2857-829F-44B8-914E-137122E626B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTypes", "Interfaces\CommonTypes.csproj", "{92DE2857-829F-44B8-914E-137122E626B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMaster", "PuppetMaster\PuppetMaster.csproj", "{26383905-7455-423A-A814-448520945B39}"
 EndProject
