@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.Collections.Concurrent;
 
 namespace MapNoReduce
 {
@@ -17,6 +18,8 @@ namespace MapNoReduce
         private string entryURL;
         private bool isJobTracker;
         private IClient client;
+        private ConcurrentDictionary<int, string> workersMap = new ConcurrentDictionary<int, string>();
+        private IList<string> listaDeWorkersDisponiveis = new List<string>();
 
         //recebe o id, port, serviceURL, entryURL(opcional)
         static void Main(string[] args)
@@ -80,6 +83,33 @@ namespace MapNoReduce
             ChannelServices.RegisterChannel(channel, true);
             client = (IClient) Activator.GetObject(typeof(IClient), entryURL);
         }
+
+        public void SubmitJob(long fileSize, int nSplits, int port)
+        {
+            long splitSize = SplitSize(fileSize, nSplits);
+            int splitStart = 0;
+            int splitEnd = 0;
+            int lastUsedID = 0;
+
+            IWorker worker = (IWorker)Activator.GetObject(
+                typeof(IWorker),
+                listaDeWorkersDisponiveis[0] + "/W");
+                        
+            worker.processSplit(splitStart, splitEnd, port);
+
+        }
+
+         public void processSplit(int splitStart, int splitEnd, int port){
+            IList<KeyValuePair<string, string>> result = null;
+
+            IClient client = (IClient)Activator.GetObject(
+                             typeof(IClient),
+                             "tcp://localhost:" + (port.ToString()) + "/C");
+
+            string partialSplitString = client.GetSplitService(splitStart, splitEnd);//verificar
+
+         }
+
 
         public void GetJob()
         {
