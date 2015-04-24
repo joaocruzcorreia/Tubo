@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.Collections.Concurrent;
 
 namespace MapNoReduce
 {
@@ -14,10 +15,12 @@ namespace MapNoReduce
     {
         private int id;
         private int port;
-        private ConcurrentDictionary<int, string> workerTable;
+        private ConcurrentDictionary<int, string> workersMap;
         private string serviceURL;
         private string entryURL;
         private bool isJobTracker;
+        private IClient client;
+        private IList<string> listaDeWorkersDisponiveis = new List<string>();
 
 
         public Worker(int id, string serviceURL, int port, string entryURL, bool isJobTracker)
@@ -27,14 +30,14 @@ namespace MapNoReduce
             this.port = port;
             this.entryURL = entryURL;
             this.isJobTracker = isJobTracker;
-            this.workerTable = new ConcurrentDictionary<int, string>();
+            this.workersMap = new ConcurrentDictionary<int, string>();
         }
 
         public Worker() { }
 
         //recebe o id, port, serviceURL, entryURL(opcional)
         static void Main(string[] args)
-        {
+        {   
             int id = Convert.ToInt32(args[0]);
             int port = Convert.ToInt32(args[1]);
             string serviceURL = args[2];
@@ -48,7 +51,7 @@ namespace MapNoReduce
 
             Worker worker = new Worker(id, serviceURL, port, entryURL, isJobTracker);
             worker.Init();
-            
+            /*
             // set variable isTracker
             // When the value of 'entryURL' is the empty string this means that the current worker
             // instance will also assume the 'tracker' role
@@ -75,7 +78,7 @@ namespace MapNoReduce
                 // rws.printWorkersTable();
             }
             System.Console.WriteLine("Press <enter> to terminate server...");
-            System.Console.ReadLine(); 
+            System.Console.ReadLine(); */
         }
 
         public void Init()
@@ -92,6 +95,33 @@ namespace MapNoReduce
             //updateWorkerTable
             client = (IClient) Activator.GetObject(typeof(IClient), entryURL);
         }
+
+        public void SubmitJob(long fileSize, int nSplits, int port)
+        {
+            long splitSize = SplitSize(fileSize, nSplits);
+            int splitStart = 0;
+            int splitEnd = 0;
+            int lastUsedID = 0;
+
+            IWorker worker = (IWorker)Activator.GetObject(
+                typeof(IWorker),
+                listaDeWorkersDisponiveis[0] + "/W");
+                        
+            worker.processSplit(splitStart, splitEnd, port);
+
+        }
+
+         public void processSplit(int splitStart, int splitEnd, int port){
+            IList<KeyValuePair<string, string>> result = null;
+
+            IClient client = (IClient)Activator.GetObject(
+                             typeof(IClient),
+                             "tcp://localhost:" + (port.ToString()) + "/C");
+
+            string partialSplitString = client.GetSplitService(splitStart, splitEnd);//verificar
+
+         }
+
 
         public void GetJob()
         {
@@ -117,9 +147,9 @@ namespace MapNoReduce
         //apenas utilizado pelo job tracker
         public void AddWorker(int id, string serviceURL){
 
-            workerTable.AddOrUpdate(id, serviceURL, (k,v) => serviceURL);
+            workersMap.AddOrUpdate(id, serviceURL, (k,v) => serviceURL);
 
-            foreach (KeyValuePair<int, string> entry in workerTable)
+            foreach (KeyValuePair<int, string> entry in workersMap)
             {
                 IWorker worker = (IWorker)Activator.GetObject(
                     typeof(IWorker),
