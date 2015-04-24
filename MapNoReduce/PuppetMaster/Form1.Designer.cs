@@ -1,4 +1,4 @@
-﻿namespace PuppetMaster
+﻿namespace MapNoReduce
 {
     partial class Form1
     {
