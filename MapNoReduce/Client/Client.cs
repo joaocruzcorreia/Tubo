@@ -53,7 +53,7 @@ namespace MapNoReduce
                 typeof(IWorker),
                 entryURL);
 
-            jobTracker.SubmitJob(fileSize, nSplits);
+            jobTracker.SubmitJob(fileSize, nSplits, port);
             
         }
 

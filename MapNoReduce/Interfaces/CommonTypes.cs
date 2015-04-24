@@ -22,10 +22,11 @@ namespace MapNoReduce
     public interface IWorker
     {
         //job Tracker
-        public void SubmitJob(long fileSize, int nSplits /*byte[] dll*/);
+        public void SubmitJob(long fileSize, int nSplits, int port);
         public void GetJob();
-
+        public void processSplit(int splitStart, int splitEnd, int port)
         public void SubmitResult();
+        public void AddWorker(int id, string serviceURL);
     }
 
 
