@@ -105,7 +105,7 @@ namespace MapNoReduce
 
             IWorker worker = (IWorker)Activator.GetObject(
                 typeof(IWorker),
-                listaDeWorkersDisponiveis[0] + "/W");
+                listaDeWorkersDisponiveis[0] + "/W");//alterar indice para lastUsedID and deixar o indice 0, mas remover o worker da lista sempre que ele tiver a fazer algo OU AINDA criar um boleano no worker para ver se ele está ocupado ou não
                         
             worker.processSplit(splitStart, splitEnd, port);
 
@@ -120,6 +120,10 @@ namespace MapNoReduce
 
             string partialSplitString = client.GetSplitService(splitStart, splitEnd);//verificar
 
+
+             //depois de tudo processado:
+
+            SubmitResult(result, client);
          }
 
 
@@ -128,9 +132,9 @@ namespace MapNoReduce
             throw new NotImplementedException();
         }
 
-        public void SubmitResult()
+        public void SubmitResult(IList<KeyValuePair<string, string>> result, IClient client)
         {
-            throw new NotImplementedException();
+            //client.receiveSplitResult(result);
         }
 
         private long SplitSize(long fileSize, int nSplits){
