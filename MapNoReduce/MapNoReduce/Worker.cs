@@ -15,12 +15,17 @@ namespace MapNoReduce
     {
         private int id;
         private int port;
-        private ConcurrentDictionary<int, string> workersMap;
+        private IDictionary<int, string> workersMap;
         private string serviceURL;
-        private string entryURL;
+        private string entryURL; // apenas utilizado se o worker for jobTracker
         private bool isJobTracker;
-        private IClient client;
-        private IList<string> listaDeWorkersDisponiveis = new List<string>();
+        private ConcurrentQueue<int> availableWorkersList = new ConcurrentQueue<int>();
+
+
+        public ConcurrentQueue<int> AvalilableWorkersList{
+            get{return this.availableWorkersList;}
+            set{this.availableWorkersList = value;}
+        }
 
 
         public Worker(int id, string serviceURL, int port, string entryURL, bool isJobTracker)
@@ -35,50 +40,24 @@ namespace MapNoReduce
 
         public Worker() { }
 
+
         //recebe o id, port, serviceURL, entryURL(opcional)
         static void Main(string[] args)
         {   
             int id = Convert.ToInt32(args[0]);
             int port = Convert.ToInt32(args[1]);
             string serviceURL = args[2];
-            string entryURL = "";
-            bool isJobTracker = false;
+            string entryURL = null;
+            bool isJobTracker = true; // o worker e job tracker quando nao existe entryURL
             if (args.Length == 4)
             {
                 entryURL = args[3];
-                isJobTracker = true;
+                isJobTracker = false;
             }
 
             Worker worker = new Worker(id, serviceURL, port, entryURL, isJobTracker);
             worker.Init();
-            /*
-            // set variable isTracker
-            // When the value of 'entryURL' is the empty string this means that the current worker
-            // instance will also assume the 'tracker' role
-            // When the value of 'entryURL' is a non-empty string this means that the
-            // Expose worker services at serviceURL
-            // set variable trackerURL
-            trackerURL = isTracker ? serviceURL : entryURL;
-            if (isTracker)
-            {
-                // Current worker is the tracker
-                // The tracker is the first worker to be added to the workers table
-                WorkerServices ws = new WorkerServices();
-                ws.registerAtTracker(id, serviceURL);
-                // ws.printWorkersTable();
-            }
-            else
-            {
-                // Current worker is not the tracker
-                // Make a remote call to register at tracker
-                WorkerServices rws = (WorkerServices)Activator.GetObject(
-                    typeof(WorkerServices),
-                     entryURL + "/W");
-                rws.registerAtTracker(id, serviceURL);
-                // rws.printWorkersTable();
-            }
-            System.Console.WriteLine("Press <enter> to terminate server...");
-            System.Console.ReadLine(); */
+            
         }
 
         public void Init()
@@ -91,27 +70,54 @@ namespace MapNoReduce
                 "W",
                 WellKnownObjectMode.Singleton);
 
-            //addWorker
-            //updateWorkerTable
-            client = (IClient) Activator.GetObject(typeof(IClient), entryURL);
+            if (isJobTracker)
+                AddWorker(this.id, this.entryURL);
+            else
+            {
+                IWorker jobTracker = (IWorker)Activator.GetObject(
+                    typeof(IWorker),
+                    entryURL);
+                jobTracker.AddWorker(this.id, this.serviceURL);
+            }
+
         }
 
-        public void SubmitJob(long fileSize, int nSplits, int port)
+        public void SubmitJobToWorker(long fileSize, int nSplits, string clientURL)
         {
             long splitSize = SplitSize(fileSize, nSplits);
-            int splitStart = 0;
-            int splitEnd = 0;
+            long splitStart = 0;
+            long splitEnd = splitSize - 1;
             int lastUsedID = 0;
 
+            /*
             IWorker worker = (IWorker)Activator.GetObject(
                 typeof(IWorker),
-                listaDeWorkersDisponiveis[0] + "/W");//alterar indice para lastUsedID and deixar o indice 0, mas remover o worker da lista sempre que ele tiver a fazer algo OU AINDA criar um boleano no worker para ver se ele está ocupado ou não
+                availableWorkersList[0] + "/W");//alterar indice para lastUsedID and deixar o indice 0, mas remover o worker da lista sempre que ele tiver a fazer algo OU AINDA criar um boleano no worker para ver se ele está ocupado ou não
                          
-            worker.processSplit(splitStart, splitEnd, port);
+            worker.ProcessSplit(splitStart, splitEnd, port);*/
+
+            for (int i=0; i<nSplits; i++)
+            {
+
+                IWorker worker = (IWorker)Activator.GetObject(
+                    typeof(IWorker),
+                    entry.Value/* + "/W"*/);
+
+                worker.ProcessSplit(splitStart, splitEnd, clientURL);
+
+                splitStart += splitSize;
+                if (splitEnd + splitSize > fileSize)
+                    splitEnd = fileSize; //ou splitEnd = fileSize-1;
+                else
+                    splitEnd += splitSize;
+
+            }
+
+            //ainda sobram splits
 
         }
 
-         public void processSplit(int splitStart, int splitEnd, int port){
+        public void ProcessSplit(long splitStart, long splitEnd, string clientURL){
             IList<KeyValuePair<string, string>> result = null;
 
             IClient client = (IClient)Activator.GetObject(
@@ -154,17 +160,67 @@ namespace MapNoReduce
         //adiciona um worker ao workersMap
         public void AddWorker(int id, string serviceURL){
 
-            workersMap.AddOrUpdate(id, serviceURL, (k,v) => serviceURL);
+            //workersMap.AddOrUpdate(id, serviceURL, (k,v) => serviceURL);
+            workersMap.Add(id, serviceURL);
 
             foreach (KeyValuePair<int, string> entry in workersMap)
             {
-                IWorker worker = (IWorker)Activator.GetObject(
-                    typeof(IWorker),
-                    entry.Value);
+                if (entry.Key != this.id)
+                {
+                    IWorker worker = (IWorker)Activator.GetObject(
+                        typeof(IWorker),
+                        entry.Value);
+                    worker.SetWorkersMap(this.workersMap);
+                }
+            }
+        }
 
+        public void SetWorkersMap(IDictionary<int, string> oldWorkersMap){
+            this.workersMap = oldWorkersMap;
+        }
 
+        public void AddAvailableWorker(int id)
+        {
+            //TODO
+        }
+
+        public void RemoveAvailableWorker(int id)
+        {
+            //TODO
+        }
+
+        
+        // apenas usado pelos workers. nao pode ser usado pelo job tracker
+        private void Available()
+        {
+            IWorker jobTracker = (IWorker) Activator.GetObject(
+                typeof(IWorker),
+                entryURL);
+ 
+            jobTracker.AddAvailableWorker(this.id);
+        }
+ 
+        // apenas usado pelos workers. nao pode ser usado pelo job tracker
+        private void NotAvailabe()  {
+            IWorker jobTracker = (IWorker) Activator.GetObject(
+                typeof(IWorker),
+                entryURL);
+ 
+            jobTracker.RemoveAvailableWorker(this.id);
+        }
+ 
+        //apenas usado pelo job tracker
+        private bool IsWorkerAvailable(int id){
+            foreach (int i in availableWorkersList)
+            {
+                if (i == id)
+                {
+                    return true;
+                }
             }
 
+            return false;
         }
+ 
     }
 }

@@ -48,15 +48,15 @@ namespace MapNoReduce
                 typeof(IWorker),
                 entryURL);
 
-            jobTracker.SubmitJob(fileSize, nSplits, port);
+           // jobTracker.SubmitJobToWorker(fileSize, nSplits, port);
             
         }
 
 
         //devolve split entre as posicoes splitBegin e splitEnd (inclusive)
-        public string GetSplitService(int splitBegin, int splitEnd)
+        public string GetSplitService(long splitBegin, long splitEnd)
         {
-            int splitSize = splitEnd - splitBegin + 1;
+            int splitSize = (int) (splitEnd - splitBegin + 1);
             byte[] s = new byte[splitSize];
             FileStream f = File.OpenRead(filePath);
             f.Seek(splitBegin, SeekOrigin.Begin);
