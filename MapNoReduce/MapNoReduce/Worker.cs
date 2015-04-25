@@ -133,6 +133,8 @@ namespace MapNoReduce
             throw new NotImplementedException();
         }
 
+
+        // devolve o tamanho do split a ser utilizado
         private long SplitSize(long fileSize, int nSplits){
 
             long splitSize;
@@ -145,6 +147,7 @@ namespace MapNoReduce
         }
 
         //apenas utilizado pelo job tracker
+        //adiciona um worker ao workersMap
         public void AddWorker(int id, string serviceURL){
 
             workersMap.AddOrUpdate(id, serviceURL, (k,v) => serviceURL);
