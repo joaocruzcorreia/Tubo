@@ -106,7 +106,7 @@ namespace MapNoReduce
             IWorker worker = (IWorker)Activator.GetObject(
                 typeof(IWorker),
                 listaDeWorkersDisponiveis[0] + "/W");//alterar indice para lastUsedID and deixar o indice 0, mas remover o worker da lista sempre que ele tiver a fazer algo OU AINDA criar um boleano no worker para ver se ele está ocupado ou não
-                        
+                         
             worker.processSplit(splitStart, splitEnd, port);
 
         }
