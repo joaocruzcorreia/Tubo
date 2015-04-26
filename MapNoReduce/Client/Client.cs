@@ -15,18 +15,13 @@ namespace MapNoReduce
     public class Client : MarshalByRefObject, IClient 
     {
         private string entryURL;
-        private static int port;
+        private static int port = 10001;
         private int nSplits;
         private string filePath;
         private string outputPath;
         private List<string> splitList;
 
         private IList<KeyValuePair<string, string>>[] mapResults;
-
-        public Client()
-        {
-            port = 10001;
-        }
 
         public void Init(string entryURL){
             this.entryURL = entryURL;
@@ -38,17 +33,19 @@ namespace MapNoReduce
                 WellKnownObjectMode.Singleton);
         }
 
-        public void Submit(string filePath, int nSplits, string outputPath, IMapper map, string dllPath)
+        public void Submit(string filePath, int nSplits, string outputPath, string mapClass, string dllPath)
         {
             //tamanho do ficheiro
             FileInfo fileInfo = new FileInfo(filePath);
             long fileSize = fileInfo.Length;
 
+            byte[] dll = File.ReadAllBytes(dllPath);
+
             IWorker jobTracker = (IWorker) Activator.GetObject(
                 typeof(IWorker),
                 entryURL);
 
-           // jobTracker.SubmitJobToWorker(fileSize, nSplits, port);
+            jobTracker.SubmitJobToWorker(fileSize, nSplits, this.entryURL, mapClass, dll);
             
         }
 

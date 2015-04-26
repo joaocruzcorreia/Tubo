@@ -1,8 +1,5 @@
-﻿using System;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MapNoReduce
 {
@@ -22,17 +19,22 @@ namespace MapNoReduce
     public interface IWorker
     {
         //worker methods
-        void GetJob();
-        void ProcessSplit(long splitStart, long splitEnd, string clientURL);
-        void SubmitResult();
-
+        void ProcessSplit(long splitStart, long splitEnd, string clientURL, string mapClass, byte[] dll, int splitNumber);
 
         //job tracker methods 
-        void SubmitJobToWorker(long fileSize, int nSplits, string clientURL);
+        void SubmitJobToWorker(long fileSize, int nSplits, string clientURL, string mapClass, byte[] dll);
         void AddWorker(int id, string serviceURL);//apenas usado pelo job tracker
-        void SetWorkersMap(IDictionary<int, string> oldWorkersMap);
-        void AddAvailableWorker(int id);
-        void RemoveAvailableWorker(int id);
+        void SetWorkersMap(ConcurrentDictionary<int, string> oldWorkersMap);
+        void AddAvailableWorker(int id, string serviceURL);
+        void RemoveAvailableWorker(int id, string serviceURL);
+
+        //puppet master commands
+        void GetStatus(); //STATUS
+        void Slow(int sec); //SLOWW
+        void FreezeWorker(); //FREEZEW
+        void UnfreezeWorker(); //UNFREEZEW
+        void FreezeCommunication(); //FREEZEC
+        void UnfreezeCommunication(); //UNFREEZEC
     }
 
 

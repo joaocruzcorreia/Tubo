@@ -13,9 +13,9 @@ namespace MapNoReduce
     class User
     {
         string entryURL = "tcp://localhost:30001/W";
-        string filePath = @"c:\padi\file.txt";
+        string filePath = @"C:\padi\file.txt";
         int nSplits = 10;
-        string outputPath = @"c:\padi\";
+        string outputPath = @"C:\padi\";
         string dllPath;
         IMapper map;
         Client client;
