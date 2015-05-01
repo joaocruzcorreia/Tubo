@@ -40,6 +40,14 @@ namespace MapNoReduce
                 if (comand[0].Equals("worker"))
                 {
 
+                    
+                    string workerPath = @"..\..\..\Worker\bin\Debug\Worker.exe";
+                   
+                    ProcessStartInfo processInfo = new ProcessStartInfo(workerPath);
+                    processInfo.Arguments = comand[1] + " " + comand[3] + " " + comand[4];
+                    processInfo.FileName = workerPath;
+                    Process.Start(processInfo);
+                  
                 }
                 if (comand[0].Equals("submit"))
                 {
@@ -50,12 +58,16 @@ namespace MapNoReduce
                     client.Init(comand[1]);
 
                     client.Submit(comand[2], Int32.Parse(comand[4]), comand[3], comand[5], comand[6]);
+                    
+
                 }
                 if (comand[0].Equals("status")){
+                    
 
                 }
                  if (comand[0].Equals("wait")){
-
+                     int secs = int.Parse(comand[1]);
+                     Thread.Sleep(secs * 1000);
                 }
                 
         
