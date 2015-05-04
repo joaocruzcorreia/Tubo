@@ -17,7 +17,7 @@ namespace MapNoReduce
 {
        public class PuppetMaster
     {
-           private String jobTrackerURL;
+           private static String jobTrackerURL;
 
 
         public static void Main()
@@ -34,10 +34,12 @@ namespace MapNoReduce
                 WellKnownObjectMode.Singleton);
         }
 
-        public void cmdReader(String allInput){
+        public static void cmdReader(String allInput){
                 string[] comand = allInput.Split(' ');
 
-                if (comand[0].Equals("worker"))
+                Console.WriteLine("0 = {0}", comand[0]);
+
+                if (comand[0].Equals("WORKER"))
                 {
 
                     
@@ -49,7 +51,7 @@ namespace MapNoReduce
                     Process.Start(processInfo);
                   
                 }
-                if (comand[0].Equals("submit"))
+                if (comand[0].Equals("SUBMIT"))
                 {
                     String c = "criarCliente";
                     IClient client = (IClient)Activator.GetObject(
@@ -62,7 +64,7 @@ namespace MapNoReduce
                     
 
                 }
-                if (comand[0].Equals("status")){
+                if (comand[0].Equals("STATUS")){
 
                     IWorker jobTracker = (IWorker)Activator.GetObject(
                      typeof(IWorker),
@@ -71,7 +73,7 @@ namespace MapNoReduce
                     jobTracker.GetWorkersStatus();
 
                 }
-                 if (comand[0].Equals("wait")){
+                 if (comand[0].Equals("WAIT")){
                      int secs = int.Parse(comand[1]);
                      Thread.Sleep(secs * 1000);
                 }

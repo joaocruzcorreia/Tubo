@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.runScriptButton = new System.Windows.Forms.Button();
-            this.scriptPathTextBox = new System.Windows.Forms.TextBox();
             this.commandButton = new System.Windows.Forms.Button();
             this.pathLabel = new System.Windows.Forms.Label();
             this.commandLabel = new System.Windows.Forms.Label();
-            this.commandTextBox = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // runScriptButton
@@ -45,13 +45,6 @@
             this.runScriptButton.Text = "Run Script";
             this.runScriptButton.UseVisualStyleBackColor = true;
             // 
-            // scriptPathTextBox
-            // 
-            this.scriptPathTextBox.Location = new System.Drawing.Point(12, 33);
-            this.scriptPathTextBox.Name = "scriptPathTextBox";
-            this.scriptPathTextBox.Size = new System.Drawing.Size(281, 20);
-            this.scriptPathTextBox.TabIndex = 1;
-            // 
             // commandButton
             // 
             this.commandButton.Location = new System.Drawing.Point(299, 104);
@@ -60,6 +53,7 @@
             this.commandButton.TabIndex = 3;
             this.commandButton.Text = "Submit";
             this.commandButton.UseVisualStyleBackColor = true;
+            this.commandButton.Click += new System.EventHandler(this.commandButton_Click);
             // 
             // pathLabel
             // 
@@ -80,23 +74,32 @@
             this.commandLabel.Text = "Command";
             this.commandLabel.Click += new System.EventHandler(this.runScriptClick);
             // 
-            // commandTextBox
+            // textBox1
             // 
-            this.commandTextBox.Location = new System.Drawing.Point(12, 104);
-            this.commandTextBox.Name = "commandTextBox";
-            this.commandTextBox.Size = new System.Drawing.Size(281, 20);
-            this.commandTextBox.TabIndex = 6;
+            this.textBox1.Location = new System.Drawing.Point(15, 33);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(278, 20);
+            this.textBox1.TabIndex = 7;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(15, 106);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(278, 20);
+            this.textBox2.TabIndex = 8;
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(386, 139);
-            this.Controls.Add(this.commandTextBox);
+            this.ClientSize = new System.Drawing.Size(394, 234);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.commandLabel);
             this.Controls.Add(this.pathLabel);
             this.Controls.Add(this.commandButton);
-            this.Controls.Add(this.scriptPathTextBox);
             this.Controls.Add(this.runScriptButton);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -108,11 +111,11 @@
         #endregion
 
         private System.Windows.Forms.Button runScriptButton;
-        private System.Windows.Forms.TextBox scriptPathTextBox;
         private System.Windows.Forms.Label pathLabel;
         private System.Windows.Forms.Button commandButton;
         private System.Windows.Forms.Label commandLabel;
-        private System.Windows.Forms.TextBox commandTextBox;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox2;
     }
 }
 
