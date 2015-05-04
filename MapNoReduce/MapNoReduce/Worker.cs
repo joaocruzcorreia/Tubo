@@ -264,7 +264,7 @@ namespace MapNoReduce
             //TODO
         }
 
-        public void FreezeCommunication(){
+        public void UnfreezeCommunication(){
             //TODO
         }
     }

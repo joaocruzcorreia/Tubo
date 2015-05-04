@@ -19,9 +19,9 @@ namespace MapNoReduce
        public class PuppetMaster
     {
            [STAThread]
-           private static String jobTrackerURL;
+           private String jobTrackerURL;
 
-        public void Main()
+        public static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -35,7 +35,7 @@ namespace MapNoReduce
                 WellKnownObjectMode.Singleton);
         }
 
-        public static void cmdReader(String allInput){
+        public void cmdReader(String allInput){
                 string[] comand = allInput.Split(' ');
 
                 if (comand[0].Equals("worker"))

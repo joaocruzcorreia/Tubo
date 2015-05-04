@@ -13,6 +13,7 @@ namespace MapNoReduce
 
     public interface IPuppetMaster
     {
+        void cmdReader(string allInput);
         
     }
 
