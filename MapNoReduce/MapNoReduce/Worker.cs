@@ -42,8 +42,9 @@ namespace MapNoReduce
 
         //recebe o id, port, serviceURL, entryURL(opcional)
         static void Main(string[] args)
-        {   
-            int id = Convert.ToInt32(args[0]);
+        {
+            Console.WriteLine("ID = DSFSDAFADSFASDFSDF");
+       /*     int id = Convert.ToInt32(args[0]);
             int port = Convert.ToInt32(args[1]);
             string serviceURL = args[2];
             string entryURL = null;
@@ -56,7 +57,7 @@ namespace MapNoReduce
 
             Worker worker = new Worker(id, serviceURL, port, entryURL, isJobTracker);
             worker.Init();
-            
+            */
         }
 
         public void Init()

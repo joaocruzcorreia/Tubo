@@ -42,13 +42,14 @@ namespace MapNoReduce
                 if (comand[0].Equals("WORKER"))
                 {
 
-                    
-                    string workerPath = @"..\..\..\Worker\bin\Debug\Worker.exe";
+                    string workerPath = @"..\..\..\MapNoReduce\bin\Debug\Worker.exe";
                    
-                    ProcessStartInfo processInfo = new ProcessStartInfo(workerPath);
-                    processInfo.Arguments = comand[1] + " " + comand[3] + " " + comand[4];
-                    processInfo.FileName = workerPath;
+                    ProcessStartInfo processInfo = new ProcessStartInfo();
+                    processInfo.FileName = Path.GetFileName(workerPath);
+                    processInfo.WorkingDirectory = Path.GetDirectoryName(workerPath);
+                    processInfo.Arguments = comand[1] + " " + comand[2] + " " + comand[3];
                     Process.Start(processInfo);
+
                   
                 }
                 if (comand[0].Equals("SUBMIT"))
