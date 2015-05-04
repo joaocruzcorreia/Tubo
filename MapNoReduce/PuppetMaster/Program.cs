@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.Remoting;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Net.Sockets;
@@ -18,8 +17,8 @@ namespace MapNoReduce
 {
        public class PuppetMaster
     {
-           [STAThread]
            private String jobTrackerURL;
+
 
         public static void Main()
         {
