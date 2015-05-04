@@ -225,6 +225,22 @@ namespace MapNoReduce
             Console.WriteLine(status);
         }
 
+        public void GetWorkersStatus()
+        {
+            foreach (KeyValuePair<int, string> entry in workersMap)
+            {
+                if (entry.Key != this.id)
+                {
+                    IWorker worker = (IWorker)Activator.GetObject(
+                        typeof(IWorker),
+                        entry.Value);
+                   // Console.WriteLine(worker.);
+                    worker.GetStatus();
+                }
+            }
+            GetStatus();
+        }
+
         public void Slow(int sec){
             previousStatus = status;
             status = "Sleeping";

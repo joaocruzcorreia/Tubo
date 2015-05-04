@@ -30,6 +30,7 @@ namespace MapNoReduce
 
         //puppet master commands
         void GetStatus(); //STATUS
+        void GetWorkersStatus(); //WORKERS STATUS
         void Slow(int sec); //SLOWW
         void FreezeWorker(); //FREEZEW
         void UnfreezeWorker(); //UNFREEZEW

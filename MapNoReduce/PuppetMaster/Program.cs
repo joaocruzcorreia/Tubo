@@ -18,7 +18,8 @@ namespace MapNoReduce
 {
        public class PuppetMaster
     {
-        [STAThread]
+           [STAThread]
+           private static String jobTrackerURL;
 
         public void Main()
         {
@@ -56,13 +57,19 @@ namespace MapNoReduce
                        typeof(IClient),
                      "tcp://localhost:10001/C");
                     client.Init(comand[1]);
+                    jobTrackerURL = comand[1];
 
                     client.Submit(comand[2], Int32.Parse(comand[4]), comand[3], comand[5], comand[6]);
                     
 
                 }
                 if (comand[0].Equals("status")){
-                    
+
+                    IWorker jobTracker = (IWorker)Activator.GetObject(
+                     typeof(IWorker),
+                     jobTrackerURL);
+
+                    jobTracker.GetWorkersStatus();
 
                 }
                  if (comand[0].Equals("wait")){
