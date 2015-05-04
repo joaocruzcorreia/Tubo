@@ -222,7 +222,9 @@ namespace MapNoReduce
         //////////////////////////////////////////////////////////////////////
 
         public void GetStatus(){
-            Console.WriteLine(status);
+
+            Console.WriteLine("ID = {0} <-> serviceURL: {1} <-> isJobTracker: {2} <-> Status: {3}", this.id, this.serviceURL, this.isJobTracker, this.status);
+ 
         }
 
         public void GetWorkersStatus()
@@ -234,7 +236,6 @@ namespace MapNoReduce
                     IWorker worker = (IWorker)Activator.GetObject(
                         typeof(IWorker),
                         entry.Value);
-                   // Console.WriteLine(worker.);
                     worker.GetStatus();
                 }
             }
