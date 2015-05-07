@@ -42,15 +42,33 @@ namespace MapNoReduce
                 if (comand[0].Equals("WORKER"))
                 {
 
-                    string workerPath = @"..\..\..\MapNoReduce\bin\Debug\Worker.exe";
+                    string workerPath = @"..\..\..\Worker\bin\Debug\Worker.exe";
                    
                     ProcessStartInfo processInfo = new ProcessStartInfo();
                     processInfo.FileName = Path.GetFileName(workerPath);
                     processInfo.WorkingDirectory = Path.GetDirectoryName(workerPath);
                     processInfo.Arguments = comand[1] + " " + comand[2] + " " + comand[3];
                     Process.Start(processInfo);
+/*
+                    string fullPath = @"C:\Users\Joao\Documents\IST\4 Ano\2 semestre\Plataformas para Aplicações Distribuídas na Internet\Tubo\MapNoReduce\Worker\bin\Release\Worker.exe";
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+                    psi.FileName = System.IO.Path.GetFileName(fullPath);
+                    psi.WorkingDirectory = System.IO.Path.GetDirectoryName(fullPath);
+                    psi.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                    psi.UseShellExecute = true;
+                    psi.Arguments = String.Format("SDFSD");
+                    process.StartInfo = psi;
+                    process.Start();*/
+             /*       try
+                    {
+                        Process.Start(processInfo);
+                    }
+                    catch (System.ComponentModel.Win32Exception e)
+                    {
+                        System.Windows.Forms.MessageBox.Show(e.NativeErrorCode.ToString());
+                    }*/
 
-                  
                 }
                 if (comand[0].Equals("SUBMIT"))
                 {

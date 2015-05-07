@@ -44,7 +44,9 @@ namespace MapNoReduce
         static void Main(string[] args)
         {
             Console.WriteLine("ID = DSFSDAFADSFASDFSDF");
-       /*     int id = Convert.ToInt32(args[0]);
+            Console.ReadLine();
+            while (true) { }
+            /*     int id = Convert.ToInt32(args[0]);
             int port = Convert.ToInt32(args[1]);
             string serviceURL = args[2];
             string entryURL = null;
@@ -60,6 +62,11 @@ namespace MapNoReduce
             */
         }
 
+        public void lol()
+        {
+
+
+        }
         public void Init()
         {
             this.status = "Creating channel";
@@ -185,23 +192,30 @@ namespace MapNoReduce
             string split = client.GetSplitService(splitStart, splitEnd);
 
             Assembly assembly = Assembly.Load(dll);
-            foreach (Type type in assembly.GetTypes())
-            {
-                if (type.IsClass == true)
-                {
-                    if (type.FullName.EndsWith("." + mapClass))
-                    {
-                        // create an instance of the object
-                        object ClassObj = Activator.CreateInstance(type);
 
-                        // Dynamically Invoke the method
-                        object[] args = new object[] { split }; //parse split 1 linha de cada vez
-                        object resultObject = type.InvokeMember("Map",
-                          BindingFlags.Default | BindingFlags.InvokeMethod,
-                               null,
-                               ClassObj,
-                               args);
-                        result = (IList<KeyValuePair<string, string>>)resultObject;
+            string[] delimitors = { "\n", "\r\n" };
+            string[] splitPart = split.Split(delimitors, StringSplitOptions.None);
+
+            foreach(string s in splitPart)
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    if (type.IsClass == true)
+                    {
+                        if (type.FullName.EndsWith("." + mapClass))
+                        {
+                            // create an instance of the object
+                            object ClassObj = Activator.CreateInstance(type);
+
+                            // Dynamically Invoke the method
+                            object[] args = new object[] { s }; //parse split 1 linha de cada vez
+                            object resultObject = type.InvokeMember("Map",
+                              BindingFlags.Default | BindingFlags.InvokeMethod,
+                                   null,
+                                   ClassObj,
+                                   args);
+                            result = (IList<KeyValuePair<string, string>>)resultObject;
+                        }
                     }
                 }
             }
