@@ -58,8 +58,6 @@ namespace MapNoReduce
                         Console.WriteLine("Output Path:");
                         outputPath = Console.ReadLine();
 
-
-
                         Console.WriteLine("Map class:");
                         mapClass = Console.ReadLine();
 
