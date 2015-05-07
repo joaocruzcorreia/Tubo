@@ -41,9 +41,13 @@ namespace MapNoReduce
 
 
         //recebe o id, port, serviceURL, entryURL(opcional)
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("ID = DSFSDAFADSFASDFSDF");
+            System.Windows.Forms.MessageBox.Show("ID asdfds3");
+            Console.WriteLine("");
+            Thread.Sleep(66699966);
+            Console.ReadLine();
+
        /*     int id = Convert.ToInt32(args[0]);
             int port = Convert.ToInt32(args[1]);
             string serviceURL = args[2];
@@ -59,6 +63,7 @@ namespace MapNoReduce
             worker.Init();
             */
         }
+
 
         public void Init()
         {
