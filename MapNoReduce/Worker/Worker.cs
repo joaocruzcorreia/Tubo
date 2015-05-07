@@ -13,7 +13,6 @@ namespace MapNoReduce
     class Worker : MarshalByRefObject, IWorker
     {
         private int id;
-        private int port;
         private ConcurrentDictionary<int, string> workersMap;
         private string serviceURL;
         private string entryURL; // apenas utilizado se o worker for jobTracker
@@ -24,11 +23,11 @@ namespace MapNoReduce
         private bool isFrozen;
 
 
-        public Worker(int id, string serviceURL, int port, string entryURL, bool isJobTracker)
+        public Worker(int id, string serviceURL, string entryURL, bool isJobTracker)
         {
             this.id = id;
             this.serviceURL = serviceURL;
-            this.port = port;
+        
             this.entryURL = entryURL;
             this.isJobTracker = isJobTracker;
             this.workersMap = new ConcurrentDictionary<int, string>();
@@ -41,27 +40,24 @@ namespace MapNoReduce
 
 
         //recebe o id, port, serviceURL, entryURL(opcional)
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
-            System.Windows.Forms.MessageBox.Show("ID asdfds3");
-            Console.WriteLine("");
-            Thread.Sleep(66699966);
+            Console.WriteLine("ID");
             Console.ReadLine();
-
-       /*     int id = Convert.ToInt32(args[0]);
-            int port = Convert.ToInt32(args[1]);
+            
+            int id = Convert.ToInt32(args[0]);
+            String pm = args[1];
             string serviceURL = args[2];
             string entryURL = null;
-            bool isJobTracker = true; // o worker e job tracker quando nao existe entryURL
+            bool isJobTracker = true; // o worker e' job tracker quando nao existe entryURL
             if (args.Length == 4)
             {
                 entryURL = args[3];
                 isJobTracker = false;
             }
 
-            Worker worker = new Worker(id, serviceURL, port, entryURL, isJobTracker);
+            Worker worker = new Worker(id, serviceURL, entryURL, isJobTracker);
             worker.Init();
-            */
         }
 
 
@@ -190,23 +186,30 @@ namespace MapNoReduce
             string split = client.GetSplitService(splitStart, splitEnd);
 
             Assembly assembly = Assembly.Load(dll);
-            foreach (Type type in assembly.GetTypes())
-            {
-                if (type.IsClass == true)
-                {
-                    if (type.FullName.EndsWith("." + mapClass))
-                    {
-                        // create an instance of the object
-                        object ClassObj = Activator.CreateInstance(type);
 
-                        // Dynamically Invoke the method
-                        object[] args = new object[] { split }; //parse split 1 linha de cada vez
-                        object resultObject = type.InvokeMember("Map",
-                          BindingFlags.Default | BindingFlags.InvokeMethod,
-                               null,
-                               ClassObj,
-                               args);
-                        result = (IList<KeyValuePair<string, string>>)resultObject;
+            string[] delimitors = { "\n", "\r\n" };
+            string[] splitPart = split.Split(delimitors, StringSplitOptions.None);
+
+            foreach(string s in splitPart)
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    if (type.IsClass == true)
+                    {
+                        if (type.FullName.EndsWith("." + mapClass))
+                        {
+                            // create an instance of the object
+                            object ClassObj = Activator.CreateInstance(type);
+
+                            // Dynamically Invoke the method
+                            object[] args = new object[] { s }; //parse split 1 linha de cada vez
+                            object resultObject = type.InvokeMember("Map",
+                              BindingFlags.Default | BindingFlags.InvokeMethod,
+                                   null,
+                                   ClassObj,
+                                   args);
+                            result = (IList<KeyValuePair<string, string>>)resultObject;
+                        }
                     }
                 }
             }

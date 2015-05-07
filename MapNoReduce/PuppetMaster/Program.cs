@@ -18,47 +18,60 @@ namespace MapNoReduce
        public class PuppetMaster
     {
            private static String jobTrackerURL;
+           private int port;
 
+           public PuppetMaster(int port)
+           {
+               this.port = port;
+               TcpChannel channel = new TcpChannel(port);
+               ChannelServices.RegisterChannel(channel, true);
+               RemotingConfiguration.RegisterWellKnownServiceType(
+                   typeof(IPuppetMaster),
+                   "PM",
+                   WellKnownObjectMode.Singleton);
+           }
 
         public static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
-            int prt = 10001;
-            TcpChannel channel = new TcpChannel(prt);
-            ChannelServices.RegisterChannel(channel, true);
-            RemotingConfiguration.RegisterWellKnownServiceType(
-                typeof(IPuppetMaster),
-                "PM",
-                WellKnownObjectMode.Singleton);
+            
         }
+
+        public void runWorker(string[] comand)
+        {
+
+                    string workerPath = @"..\..\..\Worker\bin\Debug\Worker.exe";
+                   
+                    ProcessStartInfo processInfo = new ProcessStartInfo();
+                    processInfo.FileName = Path.GetFileName(workerPath);
+                    processInfo.WorkingDirectory = Path.GetDirectoryName(workerPath);
+
+                    if (comand.Length == 4) { 
+                        processInfo.Arguments = comand[1] + " " + comand[2] + " " + comand[3];
+                    }
+                    else if (comand.Length == 5)
+                    {
+                        processInfo.Arguments = comand[1] + " " + comand[2] + " " + comand[3] + " " + comand[4];
+                    }
+
+                    Process.Start(processInfo);
+           }
 
         public static void cmdReader(String allInput){
                 string[] comand = allInput.Split(' ');
 
                 Console.WriteLine("0 = {0}", comand[0]);
 
+
                 if (comand[0].Equals("WORKER"))
                 {
 
-                    string fullPath = @"C:\Users\GuestPC\Source\Repos\Tubo\MapNoReduce\MapNoReduce\bin\Debug\Worker.exe";
-                    System.Diagnostics.Process process = new System.Diagnostics.Process();
-                    System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-                    psi.FileName = System.IO.Path.GetFileName(fullPath);
-                    psi.WorkingDirectory = System.IO.Path.GetDirectoryName(fullPath);
-                    System.Windows.Forms.MessageBox.Show("ID asdfds");
-                    psi.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-                   
-                    psi.Arguments = "sad";
-                    process.StartInfo = psi;
-                    System.Windows.Forms.MessageBox.Show("3");
-                    process.Start();
+                    int prt = Int32.Parse(comand[2]);
+                    PuppetMaster pm = new PuppetMaster(prt);
+                    pm.runWorker(comand);
 
-                    System.Windows.Forms.MessageBox.Show("Fimmmmmmmmmmmmmm");
-    
-
-                  
                 }
                 if (comand[0].Equals("SUBMIT"))
                 {
