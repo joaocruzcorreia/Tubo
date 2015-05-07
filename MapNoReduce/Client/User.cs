@@ -17,10 +17,8 @@ namespace MapNoReduce
         int nSplits = 10;
         string outputPath = @"C:\padi\";
         string dllPath;
-        IMapper map;
         Client client;
 
-        
 
         static void Main(string[] args)
         {
@@ -32,15 +30,16 @@ namespace MapNoReduce
             string mapClass;
             string dllPath;
             IClient client = new Client();
+            bool isInit;
             
             
             while (true) { 
-                Console.WriteLine("Enter a command (init or submit):");
+                Console.WriteLine("Enter a command (INIT or SUBMIT):");
                 command = Console.ReadLine();
 
                 switch (command)
                 {
-                    case ("init"):
+                    case ("INIT"):
                         Console.WriteLine("Entry URL:");
                         entryURL = Console.ReadLine();
 
@@ -48,7 +47,7 @@ namespace MapNoReduce
 
                         break;
 
-                    case ("submit"):
+                    case ("SUBMIT"):
                         Console.WriteLine("File Path:");
                         filePath = Console.ReadLine();
 

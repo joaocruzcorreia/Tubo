@@ -28,6 +28,7 @@ namespace MapNoReduce
         void SetWorkersMap(ConcurrentDictionary<int, string> oldWorkersMap);
         void AddAvailableWorker(int id, string serviceURL);
         void RemoveAvailableWorker(int id, string serviceURL);
+        string GetWorkerURL(int id);
 
         //puppet master commands
         void GetStatus(); //STATUS
