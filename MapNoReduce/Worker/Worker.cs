@@ -13,41 +13,39 @@ namespace MapNoReduce
     class Worker : MarshalByRefObject, IWorker
     {
         private int id;
-        private int port; //falta fazer
-        private ConcurrentDictionary<int, string> workersMap;
+        private int port;
         private string serviceURL;
-        private string entryURL; // apenas utilizado se o worker for jobTracker
+        private string entryURL; 
         private bool isJobTracker;
-        private ConcurrentDictionary<int, string> availableWorkers;
         private string status;
         private string previousStatus;
         private bool isFrozen;
+        private ConcurrentDictionary<int, string> workersMap;
+        private ConcurrentDictionary<int, string> availableWorkers;
 
 
-        public Worker(int id, string serviceURL, string entryURL, bool isJobTracker)
+        public Worker(int id, int port, string serviceURL, string entryURL, bool isJobTracker)
         {
             this.id = id;
             this.serviceURL = serviceURL;
-        
+            this.port = port;
             this.entryURL = entryURL;
             this.isJobTracker = isJobTracker;
             this.workersMap = new ConcurrentDictionary<int, string>();
             this.availableWorkers = new ConcurrentDictionary<int, string>();
-            this.status = "Being created";
+            this.status = "Created";
             this.isFrozen = false;
         }
 
         public Worker() { }
 
 
-        //recebe o id, port, serviceURL, entryURL(opcional)
+        //recebe o id, puppetMasterURL, serviceURL, entryURL(opcional)
         static void Main(string[] args)
         {
-            Console.WriteLine("ID");
-            Console.ReadLine();
             
             int id = Convert.ToInt32(args[0]);
-            String pm = args[1];
+            String puppetMasterURL = args[1];
             string serviceURL = args[2];
             string entryURL = null;
             bool isJobTracker = true; // o worker e' job tracker quando nao existe entryURL
@@ -57,7 +55,13 @@ namespace MapNoReduce
                 isJobTracker = false;
             }
 
-            Worker worker = new Worker(id, serviceURL, entryURL, isJobTracker);
+            //obter o port
+            int port;
+            string[] delimitors = { "/", ":" };
+            string[] parts = args[2].Split(delimitors, StringSplitOptions.None);
+            port = Convert.ToInt32(parts[4]);
+
+            Worker worker = new Worker(id, port, serviceURL, entryURL, isJobTracker);
             worker.Init();
         }
 
@@ -86,6 +90,7 @@ namespace MapNoReduce
 
             }
 
+            this.status = "Doing Nothing";
         }
 
         //////////////////////////////////////////////////////////////////////
@@ -110,7 +115,7 @@ namespace MapNoReduce
                 
                 IWorker worker = (IWorker)Activator.GetObject(
                     typeof(IWorker),
-                    entry.Value + @"\W");
+                    entry.Value);
 
                 worker.ProcessSplit(splitStart, splitEnd, clientURL, mapClass, dll, i+1);
 
@@ -120,6 +125,8 @@ namespace MapNoReduce
                 else
                     splitEnd += splitSize;
             }
+
+
         }
 
         // devolve o tamanho do split a ser utilizado
@@ -180,17 +187,19 @@ namespace MapNoReduce
         //                                                                  //
         //////////////////////////////////////////////////////////////////////
         public void ProcessSplit(long splitStart, long splitEnd, string clientURL, string mapClass, byte[] dll, int splitNumber){
-            
+
+            this.status = "Processing Split";
+
             IWorker jobTracker = (IWorker)Activator.GetObject(
                 typeof(IWorker),
                 entryURL);
             jobTracker.RemoveAvailableWorker(this.id, this.serviceURL);
 
-            IList<KeyValuePair<string, string>> result = null;
+            IList<KeyValuePair<string, string>>[] result;
             
             IClient client = (IClient)Activator.GetObject(
                              typeof(IClient),
-                             clientURL + @"\C");
+                             clientURL);
 
             string split = client.GetSplitService(splitStart, splitEnd);
 
@@ -198,7 +207,9 @@ namespace MapNoReduce
 
             string[] delimitors = { "\n", "\r\n" };
             string[] splitPart = split.Split(delimitors, StringSplitOptions.None);
-
+            int lineCounter = 0;
+            result = new IList<KeyValuePair<string, string>>[splitPart.Length];
+            
             foreach(string s in splitPart)
             {
                 foreach (Type type in assembly.GetTypes())
@@ -217,21 +228,31 @@ namespace MapNoReduce
                                    null,
                                    ClassObj,
                                    args);
-                            result = (IList<KeyValuePair<string, string>>)resultObject;
+                            result[lineCounter] = (IList<KeyValuePair<string, string>>)resultObject;
                         }
                     }
                 }
+
+                lineCounter++;
             }
 
             //depois de tudo processado:
             client.SubmitResultService(result, splitNumber);
 
             jobTracker.AddAvailableWorker(this.id, this.serviceURL);
+
+            this.status = "Split Processed";
          }
 
         public void SetWorkersMap(ConcurrentDictionary<int, string> oldWorkersMap){
             this.workersMap = oldWorkersMap;
         }
+
+        public string GetWorkerURL(int id)
+        {
+            return workersMap[id];
+        }
+
         
         //////////////////////////////////////////////////////////////////////
         //                                                                  //

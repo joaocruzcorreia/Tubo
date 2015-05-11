@@ -30,7 +30,7 @@ namespace MapNoReduce
             string mapClass;
             string dllPath;
             IClient client = new Client();
-            bool isInit;
+            bool isInit = false;
             
             
             while (true) { 
@@ -40,6 +40,7 @@ namespace MapNoReduce
                 switch (command)
                 {
                     case ("INIT"):
+                        isInit = true;
                         Console.WriteLine("Entry URL:");
                         entryURL = Console.ReadLine();
 
@@ -48,22 +49,29 @@ namespace MapNoReduce
                         break;
 
                     case ("SUBMIT"):
-                        Console.WriteLine("File Path:");
-                        filePath = Console.ReadLine();
+                        if (isInit)
+                        {
+                            Console.WriteLine("File Path:");
+                            filePath = Console.ReadLine();
 
-                        Console.WriteLine("Number of Splits:");
-                        nSplits = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Number of Splits:");
+                            nSplits = Convert.ToInt32(Console.ReadLine());
 
-                        Console.WriteLine("Output Path:");
-                        outputPath = Console.ReadLine();
+                            Console.WriteLine("Output Path:");
+                            outputPath = Console.ReadLine();
 
-                        Console.WriteLine("Map class:");
-                        mapClass = Console.ReadLine();
+                            Console.WriteLine("Map class:");
+                            mapClass = Console.ReadLine();
 
-                        Console.WriteLine("DLL Path:");
-                        dllPath = Console.ReadLine();
+                            Console.WriteLine("DLL Path:");
+                            dllPath = Console.ReadLine();
 
-                        client.Submit(filePath, nSplits, outputPath, mapClass, dllPath);
+                            client.Submit(filePath, nSplits, outputPath, mapClass, dllPath);
+
+                            Console.WriteLine("Job Completed.");
+                        }
+                        else
+                            Console.WriteLine("Must execute INIT command first.");
 
                         break;
 

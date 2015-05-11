@@ -37,22 +37,22 @@ namespace MapNoReduce
         public void runWorker(string[] comand)
         {
 
-                    string workerPath = @"..\..\..\Worker\bin\Debug\Worker.exe";
+            string workerPath = @"..\..\..\Worker\bin\Debug\Worker.exe";
                    
-                    ProcessStartInfo processInfo = new ProcessStartInfo();
-                    processInfo.FileName = Path.GetFileName(workerPath);
-                    processInfo.WorkingDirectory = Path.GetDirectoryName(workerPath);
-
-                    if (comand.Length == 4) { 
-                        processInfo.Arguments = comand[1] + " " + comand[2] + " " + comand[3];
-                        jobTrackerURL = comand[3];
-                    }
-                    else if (comand.Length == 5)
-                    {
-                        processInfo.Arguments = comand[1] + " " + comand[2] + " " + comand[3] + " " + comand[4];
-                    }
+            ProcessStartInfo processInfo = new ProcessStartInfo();
+            processInfo.FileName = Path.GetFileName(workerPath);
+            processInfo.WorkingDirectory = Path.GetDirectoryName(workerPath);
+            
+            if (comand.Length == 4) { 
+                processInfo.Arguments = comand[1] + " " + comand[2] + " " + comand[3];
+                jobTrackerURL = comand[3];
+            }
+            else if (comand.Length == 5)
+            {
+                processInfo.Arguments = comand[1] + " " + comand[2] + " " + comand[3] + " " + comand[4];
+            }
                     
-                    Process.Start(processInfo);
+            Process.Start(processInfo);
                   
            }
 
@@ -102,17 +102,17 @@ namespace MapNoReduce
                     IWorker jobTracker = (IWorker)Activator.GetObject(
                      typeof(IWorker),
                      jobTrackerURL);
-                    string workerURL = jobTracker.GetWorkerURL(comand[1]);
+                    string workerURL = jobTracker.GetWorkerURL(Convert.ToInt32(comand[1]));
                     IWorker worker = (IWorker)Activator.GetObject(
                      typeof(IWorker),
                      workerURL);
                      worker.Slow(int.Parse(comand[1]));
                 }
-                if (comand[0].Equals("FREEZEW")
+                if (comand[0].Equals("FREEZEW"){}
 
-                if (comand[0].Equals("UNFREEZEW")
-                if (comand[0].Equals("FREEZEC")
-                if (comand[0].Equals("UNFREEZEC")
+                if (comand[0].Equals("UNFREEZEW"){}
+                if (comand[0].Equals("FREEZEC"){}
+                if (comand[0].Equals("UNFREEZEC"){}
 
         }
     }

@@ -14,7 +14,7 @@ namespace MapNoReduce
     
     public class Client : MarshalByRefObject, IClient 
     {
-        private string entryURL;
+        private string jobTrackerURL;
         private static int port = 10001;
         private int nSplits;
         private string filePath;
@@ -24,7 +24,7 @@ namespace MapNoReduce
         private IList<KeyValuePair<string, string>>[] mapResults;
 
         public void Init(string entryURL){
-            this.entryURL = entryURL;
+            this.jobTrackerURL = entryURL;
             TcpChannel channel = new TcpChannel(port);
             ChannelServices.RegisterChannel(channel, true);
             RemotingConfiguration.RegisterWellKnownServiceType(
@@ -43,9 +43,9 @@ namespace MapNoReduce
 
             IWorker jobTracker = (IWorker) Activator.GetObject(
                 typeof(IWorker),
-                entryURL);
+                jobTrackerURL);
 
-            jobTracker.SubmitJobToWorker(fileSize, nSplits, this.entryURL, mapClass, dll);
+            jobTracker.SubmitJobToWorker(fileSize, nSplits, this.jobTrackerURL, mapClass, dll);
             
         }
 
@@ -64,55 +64,19 @@ namespace MapNoReduce
         }
 
 
-        public void SubmitResultService(IList<KeyValuePair<string, string>> mapResults, int splitNumber)
+        public void SubmitResultService(IList<KeyValuePair<string, string>>[] mapResults, int splitNumber)
         {
             string path = outputPath + Convert.ToString(splitNumber) + ".out";
             StreamWriter sw = new StreamWriter(path);
-
-            foreach (KeyValuePair<string, string> kvp in mapResults)
+            foreach (IList<KeyValuePair<string,string>> list in mapResults)
             {
-                sw.WriteLine(kvp.Key + " " + kvp.Value);
+                foreach (KeyValuePair<string, string> kvp in list)
+                {
+                    sw.WriteLine(kvp.Key + " " + kvp.Value);
+                }
             }
             sw.Close();
         }
 
-        /*
-         * returns a list with the splits
-         *
-        // ir para o worker
-        private string GetSplit(string filePath, int nSplits)
-        {
-            string split;
-
-            try
-            {
-                FileInfo fileInfo = new FileInfo(filePath);
-                long fileSize = fileInfo.Length;
-                long splitSize;
-
-                if(fileSize % nSplits > 0) // resto
-                    splitSize = fileInfo.Length/(nSplits-1); //se resto >0 e necessario mais um split para o resto
-                else
-                    splitSize = fileInfo.Length/nSplits;
-
-                StreamReader sr = new StreamReader(filePath);
-                char[] s = new char[splitSize];
-                string split;
-
-                while (sr.Peek() >= 0)
-                {
-                    sr.Read(s, 0, s.Length);
-                    split = new string(s);
-                    splitList.Add(split);
-                }
-
-            }
-            catch (FileNotFoundException e)
-            {
-                Console.Write(e.StackTrace);
-            }
-
-            return splitList;
-        }*/
     }
 }
