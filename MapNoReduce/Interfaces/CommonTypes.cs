@@ -8,7 +8,7 @@ namespace MapNoReduce
         void Init(string entryURL);
         void Submit(string filePath, int nSplits, string outputPath, string mapClass, string dllPath);
         string GetSplitService(long splitBegin, long splitEnd);
-        void SubmitResultService(IList<KeyValuePair<string, string>> mapResults, int splitNumber);
+        void SubmitResultService(IList<KeyValuePair<string, string>>[] mapResults, int splitNumber);
     }
 
     public interface IPuppetMaster
@@ -24,7 +24,7 @@ namespace MapNoReduce
 
         //job tracker methods 
         void SubmitJobToWorker(long fileSize, int nSplits, string clientURL, string mapClass, byte[] dll);
-        void AddWorker(int id, string serviceURL);//apenas usado pelo job tracker
+        void AddWorker(int id, string serviceURL);
         void SetWorkersMap(ConcurrentDictionary<int, string> oldWorkersMap);
         void AddAvailableWorker(int id, string serviceURL);
         void RemoveAvailableWorker(int id, string serviceURL);
