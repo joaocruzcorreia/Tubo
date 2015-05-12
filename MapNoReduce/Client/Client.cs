@@ -64,17 +64,15 @@ namespace MapNoReduce
         }
 
 
-        public void SubmitResultService(IList<KeyValuePair<string, string>>[] mapResults, int splitNumber)
+        public void SubmitResultService(IList<KeyValuePair<string, string>> mapResults, int splitNumber)
         {
             string path = outputPath + Convert.ToString(splitNumber) + ".out";
             StreamWriter sw = new StreamWriter(path);
-            foreach (IList<KeyValuePair<string,string>> list in mapResults)
+            foreach (KeyValuePair<string, string> kvp in mapResults)
             {
-                foreach (KeyValuePair<string, string> kvp in list)
-                {
-                    sw.WriteLine(kvp.Key + " " + kvp.Value);
-                }
+                sw.WriteLine(kvp.Key + " " + kvp.Value);
             }
+     
             sw.Close();
         }
 

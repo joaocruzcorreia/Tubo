@@ -1,23 +1,24 @@
-﻿using System.Collections.Concurrent;
+﻿
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace MapNoReduce
 {
-    public interface IClient
+    public interface IClient 
     {
         void Init(string entryURL);
         void Submit(string filePath, int nSplits, string outputPath, string mapClass, string dllPath);
         string GetSplitService(long splitBegin, long splitEnd);
-        void SubmitResultService(IList<KeyValuePair<string, string>>[] mapResults, int splitNumber);
+        void SubmitResultService(IList<KeyValuePair<string, string>> mapResults, int splitNumber);
     }
 
-    public interface IPuppetMaster
+    public interface IPuppetMaster 
     {
         void cmdReader(string allInput);
         
     }
 
-    public interface IWorker
+    public interface IWorker 
     {
         //worker methods
         void ProcessSplit(long splitStart, long splitEnd, string clientURL, string mapClass, byte[] dll, int splitNumber);
