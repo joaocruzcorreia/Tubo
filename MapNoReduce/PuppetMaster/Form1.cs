@@ -19,7 +19,7 @@ namespace MapNoReduce
 
         private void runScriptClick(object sender, EventArgs e)
         {
-           ;
+
         }
 
         private void scriptPathTextBox_TextChanged(object sender, EventArgs e)

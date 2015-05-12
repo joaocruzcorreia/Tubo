@@ -44,9 +44,6 @@
             this.runScriptButton.TabIndex = 0;
             this.runScriptButton.Text = "Run Script";
             this.runScriptButton.UseVisualStyleBackColor = true;
-            this.commandButton.Click += new System.EventHandler(this.runScriptClick);
-
-
             // 
             // commandButton
             // 

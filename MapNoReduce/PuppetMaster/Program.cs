@@ -21,13 +21,19 @@ namespace MapNoReduce
            private int port;
            
 
- public static void Main(){
-               TcpChannel channel = new TcpChannel(10001);
+           public PuppetMaster(int port)
+           {
+               this.port = port;
+               TcpChannel channel = new TcpChannel(port);
                ChannelServices.RegisterChannel(channel, true);
                RemotingConfiguration.RegisterWellKnownServiceType(
                    typeof(IPuppetMaster),
                    "PM",
                    WellKnownObjectMode.Singleton);
+           }
+
+        public static void Main()
+        {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
@@ -56,9 +62,12 @@ namespace MapNoReduce
                   
            }
 
-        public static void cmdReader(string allInput){
+        public static void cmdReader(String allInput){
                 string[] comand = allInput.Split(' ');
-                
+
+                Console.WriteLine("0 = {0}", comand[0]);
+
+
                 if (comand[0].Equals("WORKER"))
                 {
 
@@ -69,12 +78,7 @@ namespace MapNoReduce
                 }
                 if (comand[0].Equals("SUBMIT"))
                 {
-                    
-                    string workerPath = @"..\..\..\Client\bin\Debug\Client.exe";
-                   
-                    ProcessStartInfo processInfo = new ProcessStartInfo();
-                    processInfo.FileName = Path.GetFileName(workerPath);
-                    processInfo.WorkingDirectory = Path.GetDirectoryName(workerPath);
+                    String c = "criarCliente";
                     IClient client = (IClient)Activator.GetObject(
                        typeof(IClient),
                      "tcp://localhost:10001/C");
