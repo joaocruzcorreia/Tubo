@@ -15,19 +15,19 @@ using System.Reflection;
 
 namespace MapNoReduce
 {
-       public class PuppetMaster
+    public class PuppetMaster
     {
-           private static String jobTrackerURL;
-           private int port;
+        private static String jobTrackerURL;
+        private int port;
            
 
- public static void Main(){
-               TcpChannel channel = new TcpChannel(10001);
-               ChannelServices.RegisterChannel(channel, true);
-               RemotingConfiguration.RegisterWellKnownServiceType(
-                   typeof(IPuppetMaster),
-                   "PM",
-                   WellKnownObjectMode.Singleton);
+        public static void Main(){
+            TcpChannel channel = new TcpChannel(10001);
+            ChannelServices.RegisterChannel(channel, true);
+            RemotingConfiguration.RegisterWellKnownServiceType(
+                typeof(IPuppetMaster),
+                "PM",
+                WellKnownObjectMode.Singleton);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
@@ -108,12 +108,16 @@ namespace MapNoReduce
                      workerURL);
                      worker.Slow(int.Parse(comand[1]));
                 }
-                if (comand[0].Equals("FREEZEW"){}
+                if (comand[0].Equals("FREEZEW")){}
 
-                if (comand[0].Equals("UNFREEZEW"){}
-                if (comand[0].Equals("FREEZEC"){}
-                if (comand[0].Equals("UNFREEZEC"){}
+                if (comand[0].Equals("UNFREEZEW")){}
+                if (comand[0].Equals("FREEZEC")){}
+                if (comand[0].Equals("UNFREEZEC")){}
 
         }
+
+
+        public static void scriptReader(string scriptPath) { }
+
     }
 }

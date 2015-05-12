@@ -68,7 +68,7 @@ namespace MapNoReduce
 
         public void Init()
         {
-            this.status = "Creating channel";
+            status = "Creating channel";
 
             //registo do worker
             TcpChannel channel = new TcpChannel(port); //port
@@ -90,7 +90,7 @@ namespace MapNoReduce
 
             }
 
-            this.status = "Doing Nothing";
+            status = "Doing Nothing";
         }
 
         //////////////////////////////////////////////////////////////////////
@@ -100,7 +100,7 @@ namespace MapNoReduce
         //////////////////////////////////////////////////////////////////////
         public void SubmitJobToWorker(long fileSize, int nSplits, string clientURL, string mapClass, byte[] dll)
         {
-            this.status = "Submiting jobs to the workers";
+            status = "Submiting jobs to the workers";
 
             long splitSize = SplitSize(fileSize, nSplits);
             long splitStart = 0;
@@ -188,7 +188,7 @@ namespace MapNoReduce
         //////////////////////////////////////////////////////////////////////
         public void ProcessSplit(long splitStart, long splitEnd, string clientURL, string mapClass, byte[] dll, int splitNumber){
 
-            this.status = "Processing Split";
+            status = "Processing Split";
 
             IWorker jobTracker = (IWorker)Activator.GetObject(
                 typeof(IWorker),
@@ -241,7 +241,7 @@ namespace MapNoReduce
 
             jobTracker.AddAvailableWorker(this.id, this.serviceURL);
 
-            this.status = "Split Processed";
+            status = "Split Processed";
          }
 
         public void SetWorkersMap(ConcurrentDictionary<int, string> oldWorkersMap){
@@ -288,23 +288,59 @@ namespace MapNoReduce
             status = previousStatus;
         }
         
-        public void FreezeWorker(){
+        public void FreezeWorker(int port){
             previousStatus = status;
             status = "Frozen";
             this.isFrozen = true;
+
+            RemotingServices.Disconnect(this);
+            TcpChannel channel = new TcpChannel(port);
+            ChannelServices.RegisterChannel(channel, true);
+            RemotingConfiguration.RegisterWellKnownServiceType(
+                typeof(IWorker),
+                "W",
+                WellKnownObjectMode.Singleton);
+
+            Monitor.Wait(this);
+
         }
 
         public void UnfreezeWorker(){
             this.isFrozen = false;
             status = previousStatus;
+
+            RemotingServices.Disconnect(this);
+            TcpChannel channel = new TcpChannel(this.port);
+            ChannelServices.RegisterChannel(channel, true);
+            RemotingConfiguration.RegisterWellKnownServiceType(
+                typeof(IWorker),
+                "W",
+                WellKnownObjectMode.Singleton);
         }
 
-        public void FreezeCommunication(){
-            //TODO
+        public void FreezeCommunication(int port){
+            previousStatus = status;
+            status = "Frozen communications";
+
+            RemotingServices.Disconnect(this);
+            TcpChannel channel = new TcpChannel(port);
+            ChannelServices.RegisterChannel(channel, true);
+            RemotingConfiguration.RegisterWellKnownServiceType(
+                typeof(IWorker),
+                "W",
+                WellKnownObjectMode.Singleton);            
         }
 
         public void UnfreezeCommunication(){
-            //TODO
+            status = previousStatus;
+            
+            RemotingServices.Disconnect(this);
+            TcpChannel channel = new TcpChannel(this.port);
+            ChannelServices.RegisterChannel(channel, true);
+            RemotingConfiguration.RegisterWellKnownServiceType(
+                typeof(IWorker),
+                "W",
+                WellKnownObjectMode.Singleton);
         }
     }
 }

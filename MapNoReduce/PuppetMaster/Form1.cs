@@ -19,7 +19,7 @@ namespace MapNoReduce
 
         private void runScriptClick(object sender, EventArgs e)
         {
-           ;
+            PuppetMaster.scriptReader(scriptTb.Text);
         }
 
         private void scriptPathTextBox_TextChanged(object sender, EventArgs e)
@@ -39,8 +39,8 @@ namespace MapNoReduce
 
         private void commandButton_Click(object sender, EventArgs e)
         {
-            PuppetMaster.cmdReader(textBox2.Text);
-            textBox2.Text = string.Empty;
+            PuppetMaster.cmdReader(commandTb.Text);
+            commandTb.Text = string.Empty;
         }
     }
 }

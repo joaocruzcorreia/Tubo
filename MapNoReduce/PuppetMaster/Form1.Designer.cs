@@ -32,8 +32,8 @@
             this.commandButton = new System.Windows.Forms.Button();
             this.pathLabel = new System.Windows.Forms.Label();
             this.commandLabel = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.scriptTb = new System.Windows.Forms.TextBox();
+            this.commandTb = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // runScriptButton
@@ -44,9 +44,6 @@
             this.runScriptButton.TabIndex = 0;
             this.runScriptButton.Text = "Run Script";
             this.runScriptButton.UseVisualStyleBackColor = true;
-            this.commandButton.Click += new System.EventHandler(this.runScriptClick);
-
-
             // 
             // commandButton
             // 
@@ -77,29 +74,29 @@
             this.commandLabel.Text = "Command";
             this.commandLabel.Click += new System.EventHandler(this.runScriptClick);
             // 
-            // textBox1
+            // scriptTb
             // 
-            this.textBox1.Location = new System.Drawing.Point(15, 33);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(278, 20);
-            this.textBox1.TabIndex = 7;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.scriptTb.Location = new System.Drawing.Point(15, 33);
+            this.scriptTb.Name = "scriptTb";
+            this.scriptTb.Size = new System.Drawing.Size(278, 20);
+            this.scriptTb.TabIndex = 7;
+            this.scriptTb.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
-            // textBox2
+            // commandTb
             // 
-            this.textBox2.Location = new System.Drawing.Point(15, 106);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(278, 20);
-            this.textBox2.TabIndex = 8;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            this.commandTb.Location = new System.Drawing.Point(15, 106);
+            this.commandTb.Name = "commandTb";
+            this.commandTb.Size = new System.Drawing.Size(278, 20);
+            this.commandTb.TabIndex = 8;
+            this.commandTb.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(394, 234);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.commandTb);
+            this.Controls.Add(this.scriptTb);
             this.Controls.Add(this.commandLabel);
             this.Controls.Add(this.pathLabel);
             this.Controls.Add(this.commandButton);
@@ -117,8 +114,8 @@
         private System.Windows.Forms.Label pathLabel;
         private System.Windows.Forms.Button commandButton;
         private System.Windows.Forms.Label commandLabel;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox scriptTb;
+        private System.Windows.Forms.TextBox commandTb;
     }
 }
 
