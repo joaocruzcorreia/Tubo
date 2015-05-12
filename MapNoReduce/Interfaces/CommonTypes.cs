@@ -35,10 +35,7 @@ namespace MapNoReduce
         void GetStatus(); //STATUS
         void GetWorkersStatus(); //WORKERS STATUS
         void Slow(int sec); //SLOWW
-        void FreezeWorker(); //FREEZEW
-        void UnfreezeWorker(); //UNFREEZEW
-        void FreezeCommunication(); //FREEZEC
-        void UnfreezeCommunication(); //UNFREEZEC
+       
     }
 
 
