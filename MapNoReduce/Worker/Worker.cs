@@ -62,7 +62,9 @@ namespace MapNoReduce
             ChannelServices.RegisterChannel(channel, false);
             RemotingServices.Marshal(workerServices, "W", typeof(IWorker));
 
-            workerServices.Init();            
+            Console.WriteLine(sUri.Port);
+
+            //workerServices.Init();            
             
             Console.ReadLine();
         }

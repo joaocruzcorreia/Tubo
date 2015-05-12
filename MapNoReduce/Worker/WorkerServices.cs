@@ -15,7 +15,7 @@ namespace MapNoReduce
     {
 
         private int id;
-        private int port; //falta fazer
+        //private int port; //falta fazer
         
         private string serviceURL;
         private string entryURL; // apenas utilizado se o worker for jobTracker
@@ -24,8 +24,8 @@ namespace MapNoReduce
         private string status;
         private string previousStatus;
 
-        private ConcurrentDictionary<int, string> workersMap;
-        private ConcurrentDictionary<int, string> availableWorkers;
+        private ConcurrentDictionary<int, string> workersMap = new ConcurrentDictionary<int,string>();
+        private ConcurrentDictionary<int, string> availableWorkers = new ConcurrentDictionary<int, string>();
 
         public WorkerServices(int id, string serviceUrl, string entryUrl, bool isJobTracker)
         {
@@ -33,6 +33,15 @@ namespace MapNoReduce
             this.serviceURL = serviceURL;
             this.entryURL = entryURL;
             this.isJobTracker = isJobTracker;
+            /*Uri sUri = new Uri(serviceURL);
+            port = sUri.Port;*/
+        }
+
+        public override object InitializeLifetimeService()
+        {
+
+            return null;
+
         }
 
 
@@ -47,12 +56,12 @@ namespace MapNoReduce
                 "W",
                 WellKnownObjectMode.Singleton);
             */
-            Console.WriteLine(port);
 
             if (isJobTracker)
                 AddWorker(this.id, this.entryURL);
             else
             {
+                Console.WriteLine(entryURL);
                 IWorker jobTracker = (IWorker)Activator.GetObject(
                     typeof(IWorker),
                     entryURL);
@@ -208,14 +217,16 @@ namespace MapNoReduce
 
         public void GetWorkersStatus()
         {
+            Console.WriteLine("ID");
+
             foreach (KeyValuePair<int, string> entry in workersMap)
             {
                 if (entry.Key != this.id)
                 {
-                    IWorker worker = (IWorker)Activator.GetObject(
+                    /*IWorker worker = (IWorker)Activator.GetObject(
                         typeof(IWorker),
                         entry.Value);
-                    worker.GetStatus();
+                    worker.GetStatus();*/
                 }
             }
             GetStatus();

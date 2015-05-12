@@ -15,22 +15,16 @@ using System.Reflection;
 
 namespace MapNoReduce
 {
-       public class PuppetMaster
+       public class PuppetMaster : MarshalByRefObject, IPuppetMaster
     {
            private static String jobTrackerURL;
            private int port;
-           private static PuppetMaster pm = null;
+           public static PuppetMaster pm = null;
            
 
-           public PuppetMaster(int port)
+           public PuppetMaster()
            {
-               this.port = port;
-               TcpChannel channel = new TcpChannel(port);
-               ChannelServices.RegisterChannel(channel, true);
-               RemotingConfiguration.RegisterWellKnownServiceType(
-                   typeof(IPuppetMaster),
-                   "PM",
-                   WellKnownObjectMode.Singleton);
+              
            }
 
         [STAThread]
@@ -39,10 +33,11 @@ namespace MapNoReduce
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
+
             
         }
 
-        public void runWorker(string[] comand)
+        public static void runWorker(string[] comand)
         {
 
                     string workerPath = @"..\..\..\Worker\bin\Debug\Worker.exe";
@@ -83,12 +78,8 @@ namespace MapNoReduce
                 {
                     Uri pmUri = new Uri(comand[2]);
                     int prt = pmUri.Port;
-                    if (pm == null)
-                    {
-                        pm = new PuppetMaster(prt); //antes disto, verificar se o puppet master ja existe
-                    }
                     
-                    pm.runWorker(comand);
+                    runWorker(comand);
 
                 }
                 if (comand[0].Equals("SUBMIT"))
@@ -110,29 +101,15 @@ namespace MapNoReduce
                      typeof(IWorker),
                      jobTrackerURL);
                     Debug.WriteLine(jobTrackerURL);
-                    jobTracker.GetWorkersStatus();
+                    jobTracker.GetStatus();
 
                 }
+
                  if (comand[0].Equals("WAIT")){
                      int secs = int.Parse(comand[1]);
                      Thread.Sleep(secs * 1000);
                 }
-                if (comand[0].Equals("SLOWW")){
-                    IWorker jobTracker = (IWorker)Activator.GetObject(
-                     typeof(IWorker),
-                     jobTrackerURL);
 
-                    /*  string workerURL = jobTracker.GetWorkerURL(comand[1]);
-                      IWorker worker = (IWorker)Activator.GetObject(
-                       typeof(IWorker),
-                       workerURL);
-                       worker.Slow(int.Parse(comand[1]));*/
-                }
-              /*  if (comand[0].Equals("FREEZEW")
-
-                if (comand[0].Equals("UNFREEZEW")
-                if (comand[0].Equals("FREEZEC")
-                if (comand[0].Equals("UNFREEZEC")*/
 
         }
     }

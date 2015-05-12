@@ -4,6 +4,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Channels.Tcp;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -62,6 +65,13 @@ namespace MapNoReduce
             {
                 PuppetMaster.scriptReader(fileName);
             }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            TcpChannel channel = new TcpChannel(20001); //port
+            ChannelServices.RegisterChannel(channel, false);
+            RemotingServices.Marshal(new PuppetMaster(), "PM", typeof(IPuppetMaster));
         }
     }
 }
