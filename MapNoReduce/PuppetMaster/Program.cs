@@ -19,6 +19,7 @@ namespace MapNoReduce
     {
            private static String jobTrackerURL;
            private int port;
+           private static PuppetMaster pm = null;
            
 
            public PuppetMaster(int port)
@@ -82,7 +83,11 @@ namespace MapNoReduce
                 {
                     Uri pmUri = new Uri(comand[2]);
                     int prt = pmUri.Port;
-                    PuppetMaster pm = new PuppetMaster(prt); //antes disto, verificar se o puppet master ja existe
+                    if (pm == null)
+                    {
+                        pm = new PuppetMaster(prt); //antes disto, verificar se o puppet master ja existe
+                    }
+                    
                     pm.runWorker(comand);
 
                 }
