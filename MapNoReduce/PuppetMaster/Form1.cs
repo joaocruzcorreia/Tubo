@@ -57,6 +57,10 @@ namespace MapNoReduce
                 fileName = dlg.FileName;
                 pathLabel.Text = "Script Path -  " + dlg.FileName;
             }
+            else
+            {
+              //  MessageBox("Select script first")
+            }
         }
 
         private void runScriptButton_Click(object sender, EventArgs e)

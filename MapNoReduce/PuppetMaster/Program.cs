@@ -18,7 +18,6 @@ namespace MapNoReduce
        public class PuppetMaster : MarshalByRefObject, IPuppetMaster
     {
            private static String jobTrackerURL;
-           private int port;
            public static PuppetMaster pm = null;
            
 
@@ -59,13 +58,34 @@ namespace MapNoReduce
                   
            }
 
+        public static void runUser(string[] comand)
+        {
+
+            string userPath = @"..\..\..\Client\bin\Debug\Client\.exe";
+
+            ProcessStartInfo processInfo = new ProcessStartInfo();
+            processInfo.FileName = Path.GetFileName(userPath);
+            processInfo.WorkingDirectory = Path.GetDirectoryName(userPath);
+            processInfo.Arguments = comand[1] + " " + comand[3];//MANDAR ARGUMENTOS
+
+            Process.Start(processInfo);
+
+        }
+
         public static void scriptReader(String scriptPath)
         {
+            Queue<string> scriptQueue = new Queue<string>();
+
             foreach (string line in File.ReadLines(scriptPath))
-	        {
-                cmdReader(line);
+	        { 
+                scriptQueue.Enqueue(line);
 	        }
 
+            foreach (string command in scriptQueue)
+            {
+                cmdReader(command);
+            }
+   
         }
 
         public static void cmdReader(String allInput){
@@ -86,20 +106,20 @@ namespace MapNoReduce
                 {
                     IClient client = (IClient)Activator.GetObject(
                        typeof(IClient),
-                     "tcp://localhost:10001/C");
+                       "tcp://localhost:10001/C");
                     client.Init(comand[1]);
                     jobTrackerURL = comand[1];
 
-                    client.Submit(comand[2], Int32.Parse(comand[4]), comand[3], comand[5], comand[6]);
+                   client.Submit(comand[2], Int32.Parse(comand[4]), comand[3], comand[5], comand[6]);
                     
 
                 }
                 if (comand[0].Equals("STATUS")){
-
+                    Debug.WriteLine(jobTrackerURL);
                     IWorker jobTracker = (IWorker)Activator.GetObject(
                      typeof(IWorker),
                      jobTrackerURL);
-                    Debug.WriteLine(jobTrackerURL);
+                   
                     jobTracker.GetStatus();
 
                 }
@@ -110,6 +130,11 @@ namespace MapNoReduce
                 }
 
 
+        }
+
+        private static void MessageBox(string jobTrackerURL)
+        {
+            throw new NotImplementedException();
         }
     }
 }
