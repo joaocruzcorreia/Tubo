@@ -15,13 +15,8 @@ namespace MapNoReduce
     {
 
         private string jobTrackerURL;
-        private static int port = 10001;
-        private int nSplits;
         private string filePath;
         private string outputPath;
-        private List<string> splitList;
-
-        private IList<KeyValuePair<string, string>>[] mapResults;
 
         public void Init(string entryURL)
         {

@@ -16,9 +16,10 @@ namespace MapNoReduce
     {
 
         private int id;
-        private string serviceURL;
+        private string serviceURL; 
         private string entryURL; // apenas utilizado se o worker for jobTracker
         private bool isJobTracker;
+
         
         private string status;
         private string previousStatus;
@@ -69,7 +70,7 @@ namespace MapNoReduce
 
         public void ProcessSplit(long splitStart, long splitEnd, string clientURL, string mapClass, byte[] dll, int splitNumber)
         {
-
+            status = "Processing split";
             IWorker jobTracker = (IWorker)Activator.GetObject(
                 typeof(IWorker),
                 entryURL);
@@ -79,7 +80,7 @@ namespace MapNoReduce
 
             IClient client = (IClient)Activator.GetObject(
                              typeof(IClient),
-                             clientURL + @"\C");
+                             clientURL);
 
             string split = client.GetSplitService(splitStart, splitEnd);
 
@@ -135,9 +136,10 @@ namespace MapNoReduce
 
                 IWorker worker = (IWorker)Activator.GetObject(
                     typeof(IWorker),
-                    entry.Value + @"\W");
+                    entry.Value);
 
                 worker.ProcessSplit(splitStart, splitEnd, clientURL, mapClass, dll, i + 1);
+               
 
                 splitStart += splitSize;
                 if (splitEnd + splitSize > fileSize)
@@ -218,10 +220,10 @@ namespace MapNoReduce
             {
                 if (entry.Key != this.id)
                 {
-                    /*IWorker worker = (IWorker)Activator.GetObject(
+                        IWorker worker = (IWorker)Activator.GetObject(
                         typeof(IWorker),
                         entry.Value);
-                    worker.GetStatus();*/
+                        worker.GetStatus();
                 }
             }
             GetStatus();
