@@ -19,21 +19,42 @@ namespace MapNoReduce
         string dllPath;
         Client client;
 
-
+        // recebe entryURL, file path, output path, number of splits, map class name, dll path 
         static void Main(string[] args)
         {
+            Client client = new Client();
+
+            if (args.Length == 6)
+            {
+                string entryURL = args[0];
+                string filePath = args[1];
+                string outputPath = args[2];
+                int nSplits = Convert.ToInt32(args[3]);
+                string mapClass = args[4];
+                string dllPath = args[5];
+
+                client.Init(entryURL);
+                client.Submit(filePath, nSplits, outputPath, mapClass, dllPath);
+            }
+            else
+                UserCmd(client);  
+            
+        }
+
+
+        public static void UserCmd (Client client)
+        {
+            bool isInit = false;
             string command;
-            string entryURL = "";
+            string entryURL;
             string filePath;
             int nSplits;
             string outputPath;
             string mapClass;
             string dllPath;
-            Client client = new Client();
-            bool isInit = false;
-            
-            
-            while (true) { 
+
+            while (true)
+            {
                 Console.WriteLine("Enter a command (INIT or SUBMIT):");
                 command = Console.ReadLine();
 
@@ -78,8 +99,9 @@ namespace MapNoReduce
                     default:
                         Console.WriteLine("Not a valid command.");
                         break;
-                }    
+                }
             }
+
         }
 
     }
