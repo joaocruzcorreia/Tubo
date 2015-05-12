@@ -84,7 +84,6 @@ namespace MapNoReduce
                 }
                 if (comand[0].Equals("SUBMIT"))
                 {
-                    
                     IClient client = (IClient)Activator.GetObject(
                        typeof(IClient),
                      "tcp://localhost:10001/C");

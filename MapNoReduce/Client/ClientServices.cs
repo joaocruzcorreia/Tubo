@@ -1,19 +1,19 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
-
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MapNoReduce
 {
-    
-    public class Client 
+
+    class ClientServices : MarshalByRefObject, IClient
     {
+
         private string jobTrackerURL;
         private static int port = 10001;
         private int nSplits;
@@ -23,20 +23,10 @@ namespace MapNoReduce
 
         private IList<KeyValuePair<string, string>>[] mapResults;
 
-        private ClientServices cliService = new ClientServices();
+        public void Init(string entryURL)
+        {
+            this.jobTrackerURL = entryURL;
 
-
-        public void Init(string entryURL){
-           /* this.jobTrackerURL = entryURL;
-            TcpChannel channel = new TcpChannel(port);
-            ChannelServices.RegisterChannel(channel, true);
-            RemotingConfiguration.RegisterWellKnownServiceType(
-                typeof(IClient),
-                "C",
-                WellKnownObjectMode.Singleton);*/
-            TcpChannel channel = new TcpChannel(port);
-            ChannelServices.RegisterChannel(channel, false);
-            RemotingServices.Marshal(cliService, "C", typeof(IClient));
         }
 
         public void Submit(string filePath, int nSplits, string outputPath, string mapClass, string dllPath)
@@ -47,19 +37,19 @@ namespace MapNoReduce
 
             byte[] dll = File.ReadAllBytes(dllPath);
 
-            IWorker jobTracker = (IWorker) Activator.GetObject(
+            IWorker jobTracker = (IWorker)Activator.GetObject(
                 typeof(IWorker),
                 jobTrackerURL);
 
             jobTracker.SubmitJobToWorker(fileSize, nSplits, this.jobTrackerURL, mapClass, dll);
-            
+
         }
 
 
         //devolve split entre as posicoes splitBegin e splitEnd (inclusive)
         public string GetSplitService(long splitBegin, long splitEnd)
         {
-            int splitSize = (int) (splitEnd - splitBegin + 1);
+            int splitSize = (int)(splitEnd - splitBegin + 1);
             byte[] s = new byte[splitSize];
             FileStream f = File.OpenRead(filePath);
             f.Seek(splitBegin, SeekOrigin.Begin);
@@ -78,9 +68,8 @@ namespace MapNoReduce
             {
                 sw.WriteLine(kvp.Key + " " + kvp.Value);
             }
-     
+
             sw.Close();
         }
-
     }
 }
