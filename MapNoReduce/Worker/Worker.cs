@@ -19,20 +19,18 @@ namespace MapNoReduce
         private int id;
         private bool isJobTracker;
         private ConcurrentDictionary<int, string> availableWorkers;
-        private string status;
+        private static string status;
         private string previousStatus;
         private bool isFrozen;
         static WorkerServices workerServices;
 
         public Worker(int id, string serviceURL, string entryURL, bool isJobTracker)
         {
-            
-
 
             this.isJobTracker = isJobTracker;
             this.workersMap = new ConcurrentDictionary<int, string>();
             this.availableWorkers = new ConcurrentDictionary<int, string>();
-            this.status = "Being created";
+            status = "Being created";
             this.isFrozen = false;
         }
 
@@ -52,11 +50,13 @@ namespace MapNoReduce
                 entryURL = args[2];
                 isJobTracker = false;
             }
+  
 
-            workerServices = new WorkerServices(id, serviceURL, entryURL, isJobTracker);
+            status = "Creating channel";
 
-            //this.status = "Creating channel";
             Uri sUri = new Uri(serviceURL);
+            workerServices = new WorkerServices(id, serviceURL, entryURL, isJobTracker, sUri.Port, status);
+            
             //registo do worker
             TcpChannel channel = new TcpChannel(sUri.Port); //port
             ChannelServices.RegisterChannel(channel, false);
@@ -64,7 +64,7 @@ namespace MapNoReduce
 
             Console.WriteLine(sUri.Port);
 
-            //workerServices.Init();            
+            workerServices.Init();            
             
             Console.ReadLine();
         }

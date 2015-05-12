@@ -8,6 +8,7 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MapNoReduce
 {
@@ -15,8 +16,6 @@ namespace MapNoReduce
     {
 
         private int id;
-        //private int port; //falta fazer
-        
         private string serviceURL;
         private string entryURL; // apenas utilizado se o worker for jobTracker
         private bool isJobTracker;
@@ -26,15 +25,16 @@ namespace MapNoReduce
 
         private ConcurrentDictionary<int, string> workersMap = new ConcurrentDictionary<int,string>();
         private ConcurrentDictionary<int, string> availableWorkers = new ConcurrentDictionary<int, string>();
+        private int port;
 
-        public WorkerServices(int id, string serviceUrl, string entryUrl, bool isJobTracker)
+        public WorkerServices(int id, string serviceUrl, string entryUrl, bool isJobTracker, int port, string status)
         {
             this.id = id;
-            this.serviceURL = serviceURL;
-            this.entryURL = entryURL;
+            this.serviceURL = serviceUrl;
+            this.entryURL = entryUrl;
             this.isJobTracker = isJobTracker;
-            /*Uri sUri = new Uri(serviceURL);
-            port = sUri.Port;*/
+            this.port = port;
+            this.status = status;
         }
 
         public override object InitializeLifetimeService()
@@ -47,26 +47,21 @@ namespace MapNoReduce
 
         public void Init()
         {
-            
 
-            /*
-            ChannelServices.RegisterChannel(channel, true);
-            RemotingConfiguration.RegisterWellKnownServiceType(
-                typeof(IWorker),
-                "W",
-                WellKnownObjectMode.Singleton);
-            */
-
-            if (isJobTracker)
+            MessageBox.Show(serviceURL);
+            if (isJobTracker){
+               MessageBox.Show("Job Tracker");
                 AddWorker(this.id, this.entryURL);
+              }
             else
             {
+                MessageBox.Show("NOT JT");
                 Console.WriteLine(entryURL);
                 IWorker jobTracker = (IWorker)Activator.GetObject(
                     typeof(IWorker),
                     entryURL);
                 jobTracker.AddWorker(this.id, this.serviceURL);
-                jobTracker.AddAvailableWorker(id, serviceURL);
+                jobTracker.AddAvailableWorker(this.id, this.serviceURL);
 
             }
 
@@ -237,24 +232,6 @@ namespace MapNoReduce
             throw new NotImplementedException();
         }
 
-        public void FreezeWorker()
-        {
-            throw new NotImplementedException();
-        }
 
-        public void UnfreezeWorker()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void FreezeCommunication()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UnfreezeCommunication()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
