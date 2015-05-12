@@ -29,7 +29,7 @@ namespace MapNoReduce
             string outputPath;
             string mapClass;
             string dllPath;
-            IClient client = new Client();
+            Client client = new Client();
             bool isInit = false;
             
             
