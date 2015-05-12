@@ -7,6 +7,7 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace MapNoReduce
 {
@@ -43,6 +44,7 @@ namespace MapNoReduce
         //recebe o id, port, serviceURL, entryURL(opcional)
         static void Main(string[] args)
         {
+           
             Console.WriteLine("ID");
             Console.ReadLine();
             

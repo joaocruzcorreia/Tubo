@@ -32,8 +32,9 @@ namespace MapNoReduce
                    WellKnownObjectMode.Singleton);
            }
 
-        public static void Main()
-        {
+        [STAThread]
+        public static void Main(){
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
@@ -62,6 +63,15 @@ namespace MapNoReduce
                   
            }
 
+        public static void scriptReader(String scriptPath)
+        {
+            foreach (string line in File.ReadLines(scriptPath))
+	        {
+                cmdReader(line);
+	        }
+
+        }
+
         public static void cmdReader(String allInput){
                 string[] comand = allInput.Split(' ');
 
@@ -72,7 +82,7 @@ namespace MapNoReduce
                 {
 
                     int prt = Int32.Parse(comand[2]);
-                    PuppetMaster pm = new PuppetMaster(prt);
+                    PuppetMaster pm = new PuppetMaster(prt); //antes disto, verificar se o puppet master ja existe
                     pm.runWorker(comand);
 
                 }
@@ -106,17 +116,18 @@ namespace MapNoReduce
                     IWorker jobTracker = (IWorker)Activator.GetObject(
                      typeof(IWorker),
                      jobTrackerURL);
-                    string workerURL = jobTracker.GetWorkerURL(comand[1]);
-                    IWorker worker = (IWorker)Activator.GetObject(
-                     typeof(IWorker),
-                     workerURL);
-                     worker.Slow(int.Parse(comand[1]));
+
+                    /*  string workerURL = jobTracker.GetWorkerURL(comand[1]);
+                      IWorker worker = (IWorker)Activator.GetObject(
+                       typeof(IWorker),
+                       workerURL);
+                       worker.Slow(int.Parse(comand[1]));*/
                 }
-                if (comand[0].Equals("FREEZEW")
+              /*  if (comand[0].Equals("FREEZEW")
 
                 if (comand[0].Equals("UNFREEZEW")
                 if (comand[0].Equals("FREEZEC")
-                if (comand[0].Equals("UNFREEZEC")
+                if (comand[0].Equals("UNFREEZEC")*/
 
         }
     }
