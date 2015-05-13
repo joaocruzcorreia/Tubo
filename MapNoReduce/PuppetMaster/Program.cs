@@ -61,7 +61,7 @@ namespace MapNoReduce
         public static void runUser(string[] comand)
         {
 
-            string userPath = @"..\..\..\Client\bin\Debug\Client\.exe";
+            string userPath = @"..\..\..\Client\bin\Debug\Client.exe";
 
             ProcessStartInfo processInfo = new ProcessStartInfo();
             processInfo.FileName = Path.GetFileName(userPath);
@@ -113,11 +113,16 @@ namespace MapNoReduce
                     IWorker jobTracker = (IWorker)Activator.GetObject(
                   typeof(IWorker),
                   jobTrackerURL);
-                    
+
+
                 foreach (KeyValuePair<int, string> entry in jobTracker.getWorkersMap() ){
+                  
+
                           string url = entry.Value;
                           IWorker worker = (IWorker)Activator.GetObject(
-                          typeof(IWorker),url);           
+                          typeof(IWorker),
+                          url);   
+        
                           worker.GetStatus();   
 
                 }
@@ -131,9 +136,5 @@ namespace MapNoReduce
 
         }
 
-        private static void MessageBox(string jobTrackerURL)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

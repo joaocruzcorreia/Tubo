@@ -1,41 +1,15 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace MapNoReduce
 {
     class Worker
     {
-        
-        private ConcurrentDictionary<int, string> workersMap;
-
-        private int id;
         private bool isJobTracker;
-        private ConcurrentDictionary<int, string> availableWorkers;
         private static string status;
-        private string previousStatus;
-        private bool isFrozen;
         static WorkerServices workerServices;
-
-        public Worker(int id, string serviceURL, string entryURL, bool isJobTracker)
-        {
-
-            this.isJobTracker = isJobTracker;
-            this.workersMap = new ConcurrentDictionary<int, string>();
-            this.availableWorkers = new ConcurrentDictionary<int, string>();
-            status = "Being created";
-            this.isFrozen = false;
-        }
-
-        public Worker() { }
-
 
         //recebe o id, port, serviceURL, entryURL(opcional)
         static void Main(string[] args)
@@ -68,36 +42,5 @@ namespace MapNoReduce
             
             Console.ReadLine();
         }
-
-
-       
-
-        //////////////////////////////////////////////////////////////////////
-        //                                                                  //
-        // MÉTODOS DO JOB TRACKER                                           //
-        //                                                                  //
-        //////////////////////////////////////////////////////////////////////
-        
-
-
-        //////////////////////////////////////////////////////////////////////
-        //                                                                  //
-        // MÉTODOS DOS WORKERS                                              //
-        //                                                                  //
-        //////////////////////////////////////////////////////////////////////
-        
-
-        
-        
-        //////////////////////////////////////////////////////////////////////
-        //                                                                  //
-        // COMANDOS DO PUPPET MASTER                                        //
-        //                                                                  //
-        //////////////////////////////////////////////////////////////////////
-
-        
-
-
-
     }
 }
