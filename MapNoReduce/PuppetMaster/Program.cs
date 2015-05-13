@@ -15,16 +15,16 @@ using System.Reflection;
 
 namespace MapNoReduce
 {
-    public class PuppetMaster : MarshalByRefObject, IPuppetMaster
+       public class PuppetMaster : MarshalByRefObject, IPuppetMaster
     {
-        private static String jobTrackerURL;
-        public static PuppetMaster pm = null;
+           private static String jobTrackerURL;
+           public static PuppetMaster pm = null;
+           
 
-
-        public PuppetMaster()
-        {
-
-        }
+           public PuppetMaster()
+           {
+              
+           }
 
         [STAThread]
         public static void Main()
@@ -34,31 +34,31 @@ namespace MapNoReduce
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
 
-
+            
         }
 
         public static void runWorker(string[] comand)
         {
 
-            string workerPath = @"..\..\..\Worker\bin\Debug\Worker.exe";
-
-            ProcessStartInfo processInfo = new ProcessStartInfo();
-            processInfo.FileName = Path.GetFileName(workerPath);
-            processInfo.WorkingDirectory = Path.GetDirectoryName(workerPath);
+                    string workerPath = @"..\..\..\Worker\bin\Debug\Worker.exe";
+                   
+                    ProcessStartInfo processInfo = new ProcessStartInfo();
+                    processInfo.FileName = Path.GetFileName(workerPath);
+                    processInfo.WorkingDirectory = Path.GetDirectoryName(workerPath);
 
             if (comand.Length == 4)
             {
-                processInfo.Arguments = comand[1] + " " + comand[3];
-                jobTrackerURL = comand[3];
-            }
-            else if (comand.Length == 5)
-            {
-                processInfo.Arguments = comand[1] + " " + comand[3] + " " + comand[4];
-            }
-
-            Process.Start(processInfo);
-
-        }
+                        processInfo.Arguments = comand[1] + " " + comand[3];
+                        jobTrackerURL = comand[3];
+                    }
+                    else if (comand.Length == 5)
+                    {
+                        processInfo.Arguments = comand[1] + " " + comand[3] + " " + comand[4];
+                    }
+                    
+                    Process.Start(processInfo);
+                  
+           }
 
         public static void runUser(string[] comand)
         {
@@ -78,65 +78,66 @@ namespace MapNoReduce
             Queue<string> scriptQueue = new Queue<string>();
 
             foreach (string line in File.ReadLines(scriptPath))
-            {
+	        { 
                 scriptQueue.Enqueue(line);
-            }
+	        }
 
             foreach (string command in scriptQueue)
             {
                 cmdReader(command);
             }
-
+   
         }
 
         public static void cmdReader(String allInput)
         {
-            string[] comand = allInput.Split(' ');
+                string[] comand = allInput.Split(' ');
 
-            Console.WriteLine("0 = {0}", comand[0]);
+                Console.WriteLine("0 = {0}", comand[0]);
 
 
-            if (comand[0].Equals("WORKER"))
-            {
-                Uri pmUri = new Uri(comand[2]);
-                int prt = pmUri.Port;
+                if (comand[0].Equals("WORKER"))
+                {
+                    Uri pmUri = new Uri(comand[2]);
+                    int prt = pmUri.Port;
+                    
+                    runWorker(comand);
 
-                runWorker(comand);
+                }
+                if (comand[0].Equals("SUBMIT"))
+                {
 
-            }
-            if (comand[0].Equals("SUBMIT"))
-            {
+                    runUser(comand);
+                    jobTrackerURL = comand[1];
 
-                runUser(comand);
-                jobTrackerURL = comand[1];
-
-            }
+                }
 
             if (comand[0].Equals("STATUS"))
             {
-                IWorker jobTracker = (IWorker)Activator.GetObject(
-              typeof(IWorker),
-              jobTrackerURL);
+                    IWorker jobTracker = (IWorker)Activator.GetObject(
+                  typeof(IWorker),
+                  jobTrackerURL);
 
 
                 foreach (KeyValuePair<int, string> entry in jobTracker.getWorkersMap())
                 {
+                  
 
+                          string url = entry.Value;
+                          IWorker worker = (IWorker)Activator.GetObject(
+                          typeof(IWorker),
+                          url);   
+        
+                          worker.GetStatus();   
 
-                    string url = entry.Value;
-                    IWorker worker = (IWorker)Activator.GetObject(
-                    typeof(IWorker),
-                    url);
-
-                    worker.GetStatus();
                 }
             }
 
             if (comand[0].Equals("WAIT"))
             {
-                int secs = int.Parse(comand[1]);
-                Thread.Sleep(secs * 1000);
-            }
+                     int secs = int.Parse(comand[1]);
+                     Thread.Sleep(secs * 1000);
+                }
 
 
         }
