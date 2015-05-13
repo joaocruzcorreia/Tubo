@@ -89,6 +89,11 @@ namespace MapNoReduce
 
                         break;
 
+                    case("default"):
+                        client.Init("tcp://localhost:30001/W");
+                        client.Submit(@"C:\padi\pl.txt", 2, @"C\:padi", "CharCountMapper", @"C:\padi\LibMapperCharCount.dll");
+                        break;
+
                     default:
                         Console.WriteLine("Not a valid command.");
                         break;

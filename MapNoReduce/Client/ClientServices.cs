@@ -7,6 +7,7 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace MapNoReduce
 {
@@ -53,7 +54,12 @@ namespace MapNoReduce
         //devolve split entre as posicoes splitBegin e splitEnd (inclusive)
         public string GetSplitService(long splitBegin, long splitEnd)
         {
+            Debug.WriteLine("a fazer debug do getSplit");
+
             int splitSize = (int)(splitEnd - splitBegin + 1);
+            
+            Debug.WriteLine("splitSize {0}", splitSize);
+
             byte[] s = new byte[splitSize];
             FileStream f = File.OpenRead(filePath);
             f.Seek(splitBegin, SeekOrigin.Begin);

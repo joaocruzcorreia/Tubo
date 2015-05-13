@@ -75,36 +75,66 @@ namespace MapNoReduce
 
         public void ProcessSplit(long splitStart, long splitEnd, string clientURL, string mapClass, byte[] dll, int splitNumber)
         {
+            IWorker jobTracker = null;
+
             status = "Processing split";
-            IWorker jobTracker = (IWorker)Activator.GetObject(
-                typeof(IWorker),
-                entryURL);
-            jobTracker.RemoveAvailableWorker(this.id, this.serviceURL);
+
+            Console.WriteLine();
+            Console.WriteLine("estou a processar um split");
+
+            if (isJobTracker)
+            {
+                RemoveAvailableWorker(this.id, this.serviceURL);
+                Console.WriteLine("sou job tracker");
+            }
+            else
+            {
+                jobTracker = (IWorker)Activator.GetObject(
+                    typeof(IWorker),
+                    entryURL);
+                jobTracker.RemoveAvailableWorker(this.id, this.serviceURL);
+                Console.WriteLine("nao sou job tracker");
+            }
 
             IList<KeyValuePair<string, string>> result = new List<KeyValuePair<string, string>>();
+
+            Console.WriteLine("a contactar cliente");
 
             IClient client = (IClient)Activator.GetObject(
                              typeof(IClient),
                              clientURL);
+            Console.WriteLine(clientURL);
+
+            Console.WriteLine("a obter split");
+            Console.WriteLine("split start {0}  ----- split end {1}", splitStart, splitEnd);
 
             string split = client.GetSplitService(splitStart, splitEnd);
 
             Assembly assembly = Assembly.Load(dll);
 
             string[] delimitors = { "\n", "\r\n" };
+
+            Console.WriteLine("a fazer split do split");
+
             string[] splitPart = split.Split(delimitors, StringSplitOptions.None);
+
+            Console.WriteLine("a entrar no ciclo para fazer o job");
 
             foreach (string s in splitPart)
             {
+                Console.WriteLine(s);
                 foreach (Type type in assembly.GetTypes())
                 {
+                    Console.WriteLine("primeiro if");
                     if (type.IsClass == true)
                     {
+                        Console.WriteLine("segunfo if");
                         if (type.FullName.EndsWith("." + mapClass))
                         {
+                            Console.WriteLine("terceiro if");
                             // create an instance of the object
                             object ClassObj = Activator.CreateInstance(type);
-
+                            Console.WriteLine("instancia criada");
                             // Dynamically Invoke the method
                             object[] args = new object[] { s }; //parse split 1 linha de cada vez
                             object resultObject = type.InvokeMember("Map",
@@ -112,16 +142,26 @@ namespace MapNoReduce
                                    null,
                                    ClassObj,
                                    args);
+                            Console.WriteLine("cena feita");
+                            Console.WriteLine();
                             result = new List<KeyValuePair<string, string>>(result.Concat((IList<KeyValuePair<string, string>>)resultObject));
                         }
                     }
                 }
             }
 
+            Console.WriteLine("ja comi o split. vou gregar");
+
             //depois de tudo processado:
             client.SubmitResultService(result, splitNumber);
 
-            jobTracker.AddAvailableWorker(this.id, this.serviceURL);
+            Console.WriteLine("greguei para cima do cliente");
+
+
+            if (isJobTracker)
+                AddAvailableWorker(this.id, this.serviceURL);
+            else
+                jobTracker.AddAvailableWorker(this.id, this.serviceURL);
         }
 
 
@@ -139,12 +179,21 @@ namespace MapNoReduce
             long splitStart = 0;
             long splitEnd = splitSize - 1;
 
+            Console.WriteLine("splitSize {0}", splitSize);
+            Console.WriteLine("fileSize {0}", fileSize);
+
+
             for (int i = 0; i < nSplits; i++)
             {
                 // bloqueia enquanto nao houver workers disponiveis
+                Console.WriteLine("entrei no ciclo");
+
                 while (availableWorkers.IsEmpty) { }
 
                 KeyValuePair<int, string> entry = availableWorkers.First();
+
+                Console.WriteLine("vou contactar o worker");
+
 
                 IWorker worker = (IWorker)Activator.GetObject(
                     typeof(IWorker),
@@ -152,12 +201,17 @@ namespace MapNoReduce
 
                 worker.ProcessSplit(splitStart, splitEnd, clientURL, mapClass, dll, i + 1);
 
+                Console.WriteLine("worker a processar");
+
 
                 splitStart += splitSize;
                 if (splitEnd + splitSize > fileSize)
                     splitEnd = fileSize - 1; //ou splitEnd = fileSize;
                 else
                     splitEnd += splitSize;
+
+                Console.WriteLine("a actualizar os splits e a recomecar");
+
             }
         }
 
@@ -166,7 +220,7 @@ namespace MapNoReduce
         {
             long splitSize;
             if (fileSize % nSplits > 0) // resto
-                splitSize = fileSize / (nSplits - 1); //se resto >0 e necessario mais um split para o resto
+                splitSize = fileSize / nSplits + 1; //se resto >0 e necessario mais um split para o resto
             else
                 splitSize = fileSize / nSplits;
 

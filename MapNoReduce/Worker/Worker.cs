@@ -7,7 +7,6 @@ namespace MapNoReduce
 {
     class Worker
     {
-        private bool isJobTracker;
         private static string status;
         static WorkerServices workerServices;
 

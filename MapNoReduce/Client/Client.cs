@@ -16,6 +16,7 @@ namespace MapNoReduce
     {
         private string jobTrackerURL;
         private static int port = 10001;
+        private static string clientURL = "tcp://localhost:" + port + "/C";
 
         private ClientServices clientServices = new ClientServices();
         private bool isChCreated = false;
@@ -51,8 +52,7 @@ namespace MapNoReduce
                 typeof(IWorker),
                 jobTrackerURL);
 
-            jobTracker.SubmitJobToWorker(fileSize, nSplits, this.jobTrackerURL, mapClass, dll);
-            
+            jobTracker.SubmitJobToWorker(fileSize, nSplits, clientURL, mapClass, dll);            
         }
 
     }
