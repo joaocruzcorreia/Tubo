@@ -19,11 +19,10 @@ namespace MapNoReduce
         private int port;
         private string serviceURL; 
         private string entryURL; // apenas utilizado se o worker for jobTracker
-        private bool isJobTracker;        
+        private bool isJobTracker;
         private string status;
         private ConcurrentDictionary<int, string> workersMap = new ConcurrentDictionary<int,string>();
         private ConcurrentDictionary<int, string> availableWorkers = new ConcurrentDictionary<int, string>();
-        
 
         public WorkerServices(int id, string serviceUrl, string entryUrl, bool isJobTracker, int port, string status)
         {
@@ -33,6 +32,10 @@ namespace MapNoReduce
             this.isJobTracker = isJobTracker;
             this.port = port;
             this.status = status;
+        }
+
+        public ConcurrentDictionary<int, string> getWorkersMap(){
+            return workersMap;
         }
 
         public override object InitializeLifetimeService()
@@ -45,9 +48,9 @@ namespace MapNoReduce
         {
             MessageBox.Show(serviceURL);
             if (isJobTracker){
-                MessageBox.Show("Job Tracker");
+               MessageBox.Show("Job Tracker");
                 AddWorker(this.id, this.entryURL);
-            }
+              }
             else
             {
                 MessageBox.Show("NOT JT");
@@ -232,14 +235,6 @@ namespace MapNoReduce
             }
             GetStatus();
         }
-
-
-
-        //////////////////////////////////////////////////////////////////////
-        //                                                                  //
-        // COMANDOS DO PUPPET MASTER                                        //
-        //                                                                  //
-        //////////////////////////////////////////////////////////////////////
 
         public void Slow(int sec)
         {

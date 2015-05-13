@@ -66,8 +66,7 @@ namespace MapNoReduce
             ProcessStartInfo processInfo = new ProcessStartInfo();
             processInfo.FileName = Path.GetFileName(userPath);
             processInfo.WorkingDirectory = Path.GetDirectoryName(userPath);
-            processInfo.Arguments = comand[1] + " " + comand[3];//MANDAR ARGUMENTOS
-
+            processInfo.Arguments = comand[1] + " " + comand[2] + " " + comand[3] + " " + comand[4] + " " + comand[5] + " " + comand[6];
             Process.Start(processInfo);
 
         }
@@ -104,27 +103,26 @@ namespace MapNoReduce
                 }
                 if (comand[0].Equals("SUBMIT"))
                 {
-                    IClient client = (IClient)Activator.GetObject(
-                       typeof(IClient),
-                       "tcp://localhost:10001/C");
-                    client.Init(comand[1]);
+
+                    runUser(comand);
                     jobTrackerURL = comand[1];
 
-                   client.Submit(comand[2], Int32.Parse(comand[4]), comand[3], comand[5], comand[6]);
-                    
-
                 }
+
                 if (comand[0].Equals("STATUS")){
-                    Debug.WriteLine(jobTrackerURL);
                     IWorker jobTracker = (IWorker)Activator.GetObject(
-                     typeof(IWorker),
-                     jobTrackerURL);
-                   
-                    jobTracker.GetStatus();
-
+                  typeof(IWorker),
+                  jobTrackerURL);
+                    
+                foreach (KeyValuePair<int, string> entry in jobTracker.getWorkersMap() ){
+                          string url = entry.Value;
+                          IWorker worker = (IWorker)Activator.GetObject(
+                          typeof(IWorker),url);           
+                          worker.GetStatus();   
                 }
+            }
 
-                 if (comand[0].Equals("WAIT")){
+             if (comand[0].Equals("WAIT")){
                      int secs = int.Parse(comand[1]);
                      Thread.Sleep(secs * 1000);
                 }
