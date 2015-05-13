@@ -119,6 +119,7 @@ namespace MapNoReduce
                           IWorker worker = (IWorker)Activator.GetObject(
                           typeof(IWorker),url);           
                           worker.GetStatus();   
+
                 }
             }
 
