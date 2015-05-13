@@ -13,12 +13,19 @@ namespace MapNoReduce
 
     class ClientServices : MarshalByRefObject, IClient
     {
-
         private string jobTrackerURL;
         private int nSplits;   
         private string filePath;        
-        private string outputPath;       
-        
+        private string outputPath;
+
+        public override object InitializeLifetimeService()
+        {
+
+            return null;
+
+        }
+
+
         public int NSplits
         {
             get { return nSplits; }

@@ -38,6 +38,10 @@ namespace MapNoReduce
             this.status = status;
         }
 
+        public ConcurrentDictionary<int, string> getWorkersMap(){
+            return workersMap;
+        }
+
         public override object InitializeLifetimeService()
         {
 
@@ -210,23 +214,6 @@ namespace MapNoReduce
 
             Console.WriteLine("ID = {0} <-> serviceURL: {1} <-> isJobTracker: {2} <-> Status: {3}", this.id, this.serviceURL, this.isJobTracker, this.status);
 
-        }
-
-        public void GetWorkersStatus()
-        {
-            Console.WriteLine("ID");
-
-            foreach (KeyValuePair<int, string> entry in workersMap)
-            {
-                if (entry.Key != this.id)
-                {
-                        IWorker worker = (IWorker)Activator.GetObject(
-                        typeof(IWorker),
-                        entry.Value);
-                        worker.GetStatus();
-                }
-            }
-            GetStatus();
         }
 
         public void Slow(int sec)
