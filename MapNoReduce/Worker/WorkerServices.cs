@@ -16,17 +16,14 @@ namespace MapNoReduce
     {
 
         private int id;
+        private int port;
         private string serviceURL; 
         private string entryURL; // apenas utilizado se o worker for jobTracker
-        private bool isJobTracker;
-
-        
+        private bool isJobTracker;        
         private string status;
-        private string previousStatus;
-
         private ConcurrentDictionary<int, string> workersMap = new ConcurrentDictionary<int,string>();
         private ConcurrentDictionary<int, string> availableWorkers = new ConcurrentDictionary<int, string>();
-        private int port;
+        
 
         public WorkerServices(int id, string serviceUrl, string entryUrl, bool isJobTracker, int port, string status)
         {
@@ -40,20 +37,17 @@ namespace MapNoReduce
 
         public override object InitializeLifetimeService()
         {
-
             return null;
-
         }
 
 
         public void Init()
         {
-
             MessageBox.Show(serviceURL);
             if (isJobTracker){
-               MessageBox.Show("Job Tracker");
+                MessageBox.Show("Job Tracker");
                 AddWorker(this.id, this.entryURL);
-              }
+            }
             else
             {
                 MessageBox.Show("NOT JT");
@@ -63,10 +57,15 @@ namespace MapNoReduce
                     entryURL);
                 jobTracker.AddWorker(this.id, this.serviceURL);
                 jobTracker.AddAvailableWorker(this.id, this.serviceURL);
-
             }
-
         }
+
+
+        //////////////////////////////////////////////////////////////////////
+        //                                                                  //
+        // MÉTODOS DOS WORKERS                                              //
+        //                                                                  //
+        //////////////////////////////////////////////////////////////////////   
 
         public void ProcessSplit(long splitStart, long splitEnd, string clientURL, string mapClass, byte[] dll, int splitNumber)
         {
@@ -107,7 +106,7 @@ namespace MapNoReduce
                                    null,
                                    ClassObj,
                                    args);
-                            result.Concat((IList<KeyValuePair<string, string>>)resultObject);
+                            result = new List<KeyValuePair<string, string>>(result.Concat((IList<KeyValuePair<string, string>>)resultObject));
                         }
                     }
                 }
@@ -118,6 +117,13 @@ namespace MapNoReduce
 
             jobTracker.AddAvailableWorker(this.id, this.serviceURL);
         }
+
+
+        //////////////////////////////////////////////////////////////////////
+        //                                                                  //
+        // MÉTODOS DO JOB TRACKER                                           //
+        //                                                                  //
+        //////////////////////////////////////////////////////////////////////
 
         public void SubmitJobToWorker(long fileSize, int nSplits, string clientURL, string mapClass, byte[] dll)
         {
@@ -161,7 +167,6 @@ namespace MapNoReduce
             return splitSize;
         }
 
-        //apenas utilizado pelo job tracker
         //adiciona um worker ao workersMap
         public void AddWorker(int id, string serviceURL)
         {
@@ -207,9 +212,8 @@ namespace MapNoReduce
 
         public void GetStatus()
         {
-
-            Console.WriteLine("ID = {0} <-> serviceURL: {1} <-> isJobTracker: {2} <-> Status: {3}", this.id, this.serviceURL, this.isJobTracker, this.status);
-
+            Console.WriteLine("ID = {0} <-> serviceURL: {1} <-> isJobTracker: {2} <-> Status: {3}",
+                this.id, this.serviceURL, this.isJobTracker, this.status);
         }
 
         public void GetWorkersStatus()
@@ -228,6 +232,14 @@ namespace MapNoReduce
             }
             GetStatus();
         }
+
+
+
+        //////////////////////////////////////////////////////////////////////
+        //                                                                  //
+        // COMANDOS DO PUPPET MASTER                                        //
+        //                                                                  //
+        //////////////////////////////////////////////////////////////////////
 
         public void Slow(int sec)
         {
