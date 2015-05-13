@@ -6,8 +6,8 @@ namespace MapNoReduce
 {
     public interface IClient 
     {
-        void Init(string entryURL);
-        void Submit(string filePath, int nSplits, string outputPath, string mapClass, string dllPath);
+        //void Init(string entryURL);
+        //void Submit(string filePath, int nSplits, string outputPath, string mapClass, string dllPath);
         string GetSplitService(long splitBegin, long splitEnd);
         void SubmitResultService(IList<KeyValuePair<string, string>> mapResults, int splitNumber);
     }

@@ -16,31 +16,31 @@ namespace MapNoReduce
     {
         private string jobTrackerURL;
         private static int port = 10001;
-        private int nSplits;
-        private string filePath;
-        private string outputPath;
-        private List<string> splitList;
 
-        private IList<KeyValuePair<string, string>>[] mapResults;
-
-        private ClientServices cliService = new ClientServices();
+        private ClientServices clientServices = new ClientServices();
+        private bool isChCreated = false;
 
 
         public void Init(string entryURL){
-           /* this.jobTrackerURL = entryURL;
-            TcpChannel channel = new TcpChannel(port);
-            ChannelServices.RegisterChannel(channel, true);
-            RemotingConfiguration.RegisterWellKnownServiceType(
-                typeof(IClient),
-                "C",
-                WellKnownObjectMode.Singleton);*/
-            TcpChannel channel = new TcpChannel(port);
-            ChannelServices.RegisterChannel(channel, false);
-            RemotingServices.Marshal(cliService, "C", typeof(IClient));
+            
+            this.jobTrackerURL = entryURL;
+            clientServices.JobTrackerURL = entryURL;
+            
+            if (!isChCreated)
+            {
+                TcpChannel channel = new TcpChannel(port);
+                ChannelServices.RegisterChannel(channel, false);
+                RemotingServices.Marshal(clientServices, "C", typeof(IClient));
+                isChCreated = true;
+            }
         }
 
         public void Submit(string filePath, int nSplits, string outputPath, string mapClass, string dllPath)
         {
+            clientServices.FilePath = filePath;
+            clientServices.NSplits = nSplits;
+            clientServices.OutputPath = outputPath;
+
             //tamanho do ficheiro
             FileInfo fileInfo = new FileInfo(filePath);
             long fileSize = fileInfo.Length;
@@ -53,33 +53,6 @@ namespace MapNoReduce
 
             jobTracker.SubmitJobToWorker(fileSize, nSplits, this.jobTrackerURL, mapClass, dll);
             
-        }
-
-
-        //devolve split entre as posicoes splitBegin e splitEnd (inclusive)
-        public string GetSplitService(long splitBegin, long splitEnd)
-        {
-            int splitSize = (int) (splitEnd - splitBegin + 1);
-            byte[] s = new byte[splitSize];
-            FileStream f = File.OpenRead(filePath);
-            f.Seek(splitBegin, SeekOrigin.Begin);
-            f.Read(s, 0, splitSize);
-            f.Close();
-            string split = System.Text.Encoding.UTF8.GetString(s);
-            return split;
-        }
-
-
-        public void SubmitResultService(IList<KeyValuePair<string, string>> mapResults, int splitNumber)
-        {
-            string path = outputPath + Convert.ToString(splitNumber) + ".out";
-            StreamWriter sw = new StreamWriter(path);
-            foreach (KeyValuePair<string, string> kvp in mapResults)
-            {
-                sw.WriteLine(kvp.Key + " " + kvp.Value);
-            }
-     
-            sw.Close();
         }
 
     }

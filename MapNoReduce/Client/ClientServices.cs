@@ -15,29 +15,31 @@ namespace MapNoReduce
     {
 
         private string jobTrackerURL;
-        private string filePath;
-        private string outputPath;
-
-        public void Init(string entryURL)
+        private int nSplits;   
+        private string filePath;        
+        private string outputPath;       
+        
+        public int NSplits
         {
-            this.jobTrackerURL = entryURL;
-
+            get { return nSplits; }
+            set { nSplits = value; }
         }
 
-        public void Submit(string filePath, int nSplits, string outputPath, string mapClass, string dllPath)
+        public string FilePath
         {
-            //tamanho do ficheiro
-            FileInfo fileInfo = new FileInfo(filePath);
-            long fileSize = fileInfo.Length;
-
-            byte[] dll = File.ReadAllBytes(dllPath);
-
-            IWorker jobTracker = (IWorker)Activator.GetObject(
-                typeof(IWorker),
-                jobTrackerURL);
-
-            jobTracker.SubmitJobToWorker(fileSize, nSplits, this.jobTrackerURL, mapClass, dll);
-
+            get { return filePath; }
+            set { filePath = value; }
+        }
+        
+        public string OutputPath
+        {
+            get { return outputPath; }
+            set { outputPath = value; }
+        }
+        public string JobTrackerURL
+        {
+            get { return jobTrackerURL; }
+            set { jobTrackerURL = value; }
         }
 
 

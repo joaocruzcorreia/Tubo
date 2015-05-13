@@ -12,12 +12,6 @@ namespace MapNoReduce
 {
     class User
     {
-        string entryURL = "tcp://localhost:30001/W";
-        string filePath = @"C:\padi\file.txt";
-        int nSplits = 10;
-        string outputPath = @"C:\padi\";
-        string dllPath;
-        Client client;
 
         // recebe entryURL, file path, output path, number of splits, map class name, dll path 
         static void Main(string[] args)
@@ -40,7 +34,6 @@ namespace MapNoReduce
                 UserCmd(client);  
             
         }
-
 
         public static void UserCmd (Client client)
         {
