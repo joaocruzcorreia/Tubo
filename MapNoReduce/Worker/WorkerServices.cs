@@ -49,7 +49,7 @@ namespace MapNoReduce
             MessageBox.Show(serviceURL);
             if (isJobTracker){
                MessageBox.Show("Job Tracker");
-                AddWorker(this.id, this.entryURL);
+                AddWorker(this.id, this.serviceURL);
               }
             else
             {
@@ -176,6 +176,7 @@ namespace MapNoReduce
 
             //workersMap.AddOrUpdate(id, serviceURL, (k,v) => serviceURL);
             workersMap.TryAdd(id, serviceURL);
+            
 
             foreach (KeyValuePair<int, string> entry in workersMap)
             {
