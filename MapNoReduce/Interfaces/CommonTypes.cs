@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace MapNoReduce
+namespace PADIMapNoReduce
 {
     public interface IClient 
     {

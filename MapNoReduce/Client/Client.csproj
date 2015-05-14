@@ -7,7 +7,7 @@
     <ProjectGuid>{EE14457D-4A61-48F5-BD0B-FEF6751BDAEB}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MapNoReduce</RootNamespace>
+    <RootNamespace>PADIMapNoReduce</RootNamespace>
     <AssemblyName>Client</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -32,6 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LibMapperCharCount">
+      <HintPath>..\..\..\..\..\..\..\padi\LibMapperCharCount.dll</HintPath>
+    </Reference>
+    <Reference Include="LibMapperParadiseCount">
+      <HintPath>..\..\..\..\..\..\..\padi\LibMapperParadiseCount.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Remoting" />
@@ -51,9 +57,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Interfaces\CommonTypes.csproj">
+    <ProjectReference Include="..\Interfaces\LibPADIMapNoReduce.csproj">
       <Project>{92de2857-829f-44b8-914e-137122e626b7}</Project>
-      <Name>CommonTypes</Name>
+      <Name>LibPADIMapNoReduce</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

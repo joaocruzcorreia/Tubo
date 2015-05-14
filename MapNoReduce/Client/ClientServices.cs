@@ -7,8 +7,9 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
-namespace MapNoReduce
+namespace PADIMapNoReduce
 {
 
     class ClientServices : MarshalByRefObject, IClient
@@ -53,7 +54,12 @@ namespace MapNoReduce
         //devolve split entre as posicoes splitBegin e splitEnd (inclusive)
         public string GetSplitService(long splitBegin, long splitEnd)
         {
+            Debug.WriteLine("a fazer debug do getSplit");
+
             int splitSize = (int)(splitEnd - splitBegin + 1);
+            
+            Debug.WriteLine("splitSize {0}", splitSize);
+
             byte[] s = new byte[splitSize];
             FileStream f = File.OpenRead(filePath);
             f.Seek(splitBegin, SeekOrigin.Begin);
@@ -66,11 +72,20 @@ namespace MapNoReduce
 
         public void SubmitResultService(IList<KeyValuePair<string, string>> mapResults, int splitNumber)
         {
-            string path = outputPath + Convert.ToString(splitNumber) + ".out";
+            string path = outputPath + @"\" + Convert.ToString(splitNumber) + ".out";
+           /* Debug.WriteLine("");
+            Debug.WriteLine("");
+            Debug.WriteLine(path);
+            Debug.WriteLine("");
+            Debug.WriteLine("");
+            FileStream fs = File.Create(@path);
+            fs.Close();*/
+
             StreamWriter sw = new StreamWriter(path);
             foreach (KeyValuePair<string, string> kvp in mapResults)
             {
                 sw.WriteLine(kvp.Key + " " + kvp.Value);
+                Debug.WriteLine(kvp.Key + " " + kvp.Value);
             }
 
             sw.Close();
