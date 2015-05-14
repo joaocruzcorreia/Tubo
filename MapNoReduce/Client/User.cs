@@ -7,11 +7,19 @@ using System.Diagnostics;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
+using PADIMapNoReduce;
 
-namespace PADIMapNoReduce
+namespace MapNoReduce
 {
     class User
     {
+        private static string entryURL;
+        private static string filePath;
+        private static string outputPath;
+        private static int nSplits;
+        private static string mapClass;
+        private static string dllPath;
+        private static bool isInit;
 
         // recebe entryURL, file path, output path, number of splits, map class name, dll path 
         static void Main(string[] args)
@@ -20,31 +28,24 @@ namespace PADIMapNoReduce
 
             if (args.Length == 6)
             {
-                string entryURL = args[0];
-                string filePath = args[1];
-                string outputPath = args[2];
-                int nSplits = Convert.ToInt32(args[3]);
-                string mapClass = args[4];
-                string dllPath = args[5];
+                entryURL = args[0];
+                filePath = args[1];
+                outputPath = args[2];
+                nSplits = Convert.ToInt32(args[3]);
+                mapClass = args[4];
+                dllPath = args[5];
+                UserCmd(client);
 
-                client.Init(entryURL);
-                client.Submit(filePath, nSplits, outputPath, mapClass, dllPath);
             }
             else
-                UserCmd(client);  
-            
+                UserCmd(client);
+
         }
 
-        public static void UserCmd (Client client)
+        public static void UserCmd(Client client)
         {
-            bool isInit = false;
+            isInit = false;
             string command;
-            string entryURL;
-            string filePath;
-            int nSplits;
-            string outputPath;
-            string mapClass;
-            string dllPath;
 
             while (true)
             {
@@ -89,9 +90,13 @@ namespace PADIMapNoReduce
 
                         break;
 
-                    case("default"):
+                    case ("default"):
                         client.Init("tcp://localhost:30001/W");
-                        client.Submit(@"C:\padi\pl.txt", 5, @"C:\padi", "ParadiseCountMapper", @"C:\padi\LibPADIMapNoReduce.dll");
+                        client.Submit(@"C:\padi\pl.txt", 2, @"C:\padi", "CharCountMapper", @"C:\padi\LibMapperCharCount.dll");
+                        break;
+                    case ("default1"):
+                        client.Init("tcp://localhost:30001/W");
+                        client.Submit(@"C:\padi\pl.txt", 2, @"C:\padi", "ParadiseCountMapper", @"C:\padi\LibMapperParadiseCount.dll");
                         break;
 
                     default:

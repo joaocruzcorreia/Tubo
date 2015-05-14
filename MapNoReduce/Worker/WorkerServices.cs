@@ -109,7 +109,8 @@ namespace PADIMapNoReduce
             //Console.WriteLine("split start {0}  ----- split end {1}", splitStart, splitEnd);
 
             string split = client.GetSplitService(splitStart, splitEnd);
-
+         //   Console.WriteLine(split[0]);
+         //   Console.ReadLine();
             Assembly assembly = Assembly.Load(dll);
 
             string[] delimitors = { "\n", "\r\n" };
@@ -194,7 +195,7 @@ namespace PADIMapNoReduce
 
             long splitSize = SplitSize(fileSize, nSplits);
             long splitStart = 0;
-            long splitEnd = splitSize - 1;
+            long splitEnd = splitSize;
 
             //Console.WriteLine("splitSize {0}", splitSize);
             //Console.WriteLine("fileSize {0}", fileSize);
