@@ -71,6 +71,15 @@ namespace MapNoReduce
             }
         }
 
+
+        private void stepByStep_click(object sender, EventArgs e)
+        {
+            if (fileName != null)
+            {
+                PuppetMaster.scriptReader(fileName);
+            }
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             TcpChannel channel = new TcpChannel(20001); //port

@@ -92,6 +92,15 @@
             this.button1.Text = "Search Script";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+
+
+            this.stepByStepButton.Location = new System.Drawing.Point(100, 20);
+            this.stepByStepButton.Name = "button1";
+            this.stepByStepButton.Size = new System.Drawing.Size(83, 23);
+            this.stepByStepButton.TabIndex = 10;
+            this.stepByStepButton.Text = "StepByStep";
+            this.stepByStepButton.UseVisualStyleBackColor = true;
+            this.stepByStepButton.Click += new System.EventHandler(this.stepByStep_click);
             // 
             // Form1
             // 
@@ -104,6 +113,7 @@
             this.Controls.Add(this.pathLabel);
             this.Controls.Add(this.commandButton);
             this.Controls.Add(this.runScriptButton);
+            this.Controls.Add(this.stepByStepButton);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -120,6 +130,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button runScriptButton;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button stepByStepButton;
     }
 }
 

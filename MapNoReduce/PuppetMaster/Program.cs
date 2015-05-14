@@ -19,7 +19,8 @@ namespace MapNoReduce
     {
            private static String jobTrackerURL;
            public static PuppetMaster pm = null;
-           
+          public static Queue<string> scriptQueue = null;
+           public int WasLoaded;
 
            public PuppetMaster()
            {
@@ -87,6 +88,28 @@ namespace MapNoReduce
    
         }
 
+        public static void scripByStep(String scriptPath)
+        {
+
+              scriptQueue = new Queue<string>();
+            if(!WasLoaded)
+            foreach (string line in File.ReadLines(scriptPath))
+            {
+                scriptQueue.Enqueue(line); 
+                WasLoaded = true;
+            }  
+
+            string comand = scriptQueue.Dequeue();
+
+            cmdReader(comand);
+           }
+        }
+
+    
+
+     
+
+        
         public static void cmdReader(String allInput){
                 string[] comand = allInput.Split(' ');
 
