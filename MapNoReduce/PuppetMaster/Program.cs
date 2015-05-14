@@ -55,6 +55,7 @@ namespace PADIMapNoReduce
             else if (comand.Length == 5)
             {
                 processInfo.Arguments = comand[1] + " " + comand[3] + " " + comand[4];
+                
             }
 
             Process.Start(processInfo);

@@ -35,13 +35,11 @@
             this.runScriptButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // commandButton
             // 
-            this.commandButton.Location = new System.Drawing.Point(299, 104);
+            this.commandButton.Location = new System.Drawing.Point(296, 144);
             this.commandButton.Name = "commandButton";
             this.commandButton.Size = new System.Drawing.Size(83, 23);
             this.commandButton.TabIndex = 3;
@@ -61,7 +59,7 @@
             // commandLabel
             // 
             this.commandLabel.AutoSize = true;
-            this.commandLabel.Location = new System.Drawing.Point(9, 88);
+            this.commandLabel.Location = new System.Drawing.Point(9, 128);
             this.commandLabel.Name = "commandLabel";
             this.commandLabel.Size = new System.Drawing.Size(86, 13);
             this.commandLabel.TabIndex = 5;
@@ -70,7 +68,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(15, 106);
+            this.textBox2.Location = new System.Drawing.Point(12, 144);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(278, 20);
             this.textBox2.TabIndex = 8;
@@ -78,7 +76,7 @@
             // 
             // runScriptButton
             // 
-            this.runScriptButton.Location = new System.Drawing.Point(299, 62);
+            this.runScriptButton.Location = new System.Drawing.Point(299, 72);
             this.runScriptButton.Name = "runScriptButton";
             this.runScriptButton.Size = new System.Drawing.Size(83, 23);
             this.runScriptButton.TabIndex = 0;
@@ -98,7 +96,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(299, 144);
+            this.button2.Location = new System.Drawing.Point(299, 101);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(83, 23);
             this.button2.TabIndex = 10;
@@ -106,29 +104,11 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.stepByStep_click);
             // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(15, 147);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(278, 20);
-            this.textBox3.TabIndex = 11;
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(12, 62);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(281, 20);
-            this.textBox1.TabIndex = 12;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(410, 255);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.textBox3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox2);
@@ -154,8 +134,6 @@
         private System.Windows.Forms.Button runScriptButton;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

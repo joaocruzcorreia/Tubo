@@ -69,19 +69,19 @@ namespace PADIMapNoReduce
 
         private void runScriptButton_Click(object sender, EventArgs e)
         {
-            string path = textBox1.Text;
+            string path = pathLabel.Text;
 
-           PuppetMaster.scriptReader(path);
+           PuppetMaster.scriptReader(fileName);
 
-           textBox3.Text = string.Empty;
+           pathLabel.Text = string.Empty;
         }
 
 
         private void stepByStep_click(object sender, EventArgs e)
         {
-            string path = textBox3.Text;
-            PuppetMaster.scriptBystep(path);
-            textBox3.Text = string.Empty;
+            
+            PuppetMaster.scriptBystep(fileName);
+            pathLabel.Text = string.Empty;
         }
 
         private void Form1_Load(object sender, EventArgs e)
