@@ -9,7 +9,7 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using PADIMapNoReduce;
 
-namespace MapNoReduce
+namespace PADIMapNoReduce
 {
     class User
     {

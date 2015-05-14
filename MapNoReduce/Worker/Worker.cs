@@ -9,8 +9,9 @@ namespace PADIMapNoReduce
     {
         private static string status;
         static WorkerServices workerServices;
+        public static string jobTrackerURL = null;
 
-        //recebe o id, port, serviceURL, entryURL(opcional)
+        //recebe o id, serviceURL, entryURL(opcional)
         static void Main(string[] args)
         {
             
@@ -18,6 +19,7 @@ namespace PADIMapNoReduce
             string serviceURL = args[1];
             string entryURL = null;
             bool isJobTracker = true; // o worker e' job tracker quando nao existe entryURL
+            jobTrackerURL = serviceURL; 
             if (args.Length == 3)
             {
                 entryURL = args[2];

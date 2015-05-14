@@ -17,9 +17,10 @@ namespace PADIMapNoReduce
 {
     public class PuppetMaster : MarshalByRefObject, IPuppetMaster
     {
-        private static String jobTrackerURL;
+        private static string jobTrackerURL;
         public static PuppetMaster pm = null;
-
+        public static Queue<string> scriptQueue = new Queue<string>();
+        public static bool wasLoaded = false;
 
         public PuppetMaster()
         {
@@ -88,6 +89,27 @@ namespace PADIMapNoReduce
             }
 
         }
+
+
+
+          public static void scriptBystep (String  scriptPath)
+        {
+
+            if (!wasLoaded){
+            foreach (string line in File.ReadLines(scriptPath))
+            {
+                scriptQueue.Enqueue(line);
+            }
+           }
+
+            string comand = scriptQueue.Dequeue();
+
+            cmdReader(comand);
+
+        }
+
+
+
 
         public static void cmdReader(String allInput)
         {

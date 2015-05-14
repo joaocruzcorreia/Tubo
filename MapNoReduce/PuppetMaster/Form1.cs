@@ -42,6 +42,10 @@ namespace PADIMapNoReduce
 
         }
 
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
         private void commandButton_Click(object sender, EventArgs e)
         {
             PuppetMaster.cmdReader(textBox2.Text);
@@ -65,19 +69,19 @@ namespace PADIMapNoReduce
 
         private void runScriptButton_Click(object sender, EventArgs e)
         {
-            if (fileName != null)
-            {
-                PuppetMaster.scriptReader(fileName);
-            }
+            string path = textBox1.Text;
+
+           PuppetMaster.scriptReader(path);
+
+           textBox3.Text = string.Empty;
         }
 
 
         private void stepByStep_click(object sender, EventArgs e)
         {
-            if (fileName != null)
-            {
-                PuppetMaster.scriptReader(fileName);
-            }
+            string path = textBox3.Text;
+            PuppetMaster.scriptBystep(path);
+            textBox3.Text = string.Empty;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -85,6 +89,21 @@ namespace PADIMapNoReduce
             TcpChannel channel = new TcpChannel(20001); //port
             ChannelServices.RegisterChannel(channel, false);
             RemotingServices.Marshal(new PuppetMaster(), "PM", typeof(IPuppetMaster));
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        {
+
         }
     }
 }
