@@ -1,4 +1,4 @@
-﻿namespace MapNoReduce
+﻿namespace PADIMapNoReduce
 {
     partial class Form1
     {

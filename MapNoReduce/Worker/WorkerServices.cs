@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MapNoReduce
+namespace PADIMapNoReduce
 {
     class WorkerServices : MarshalByRefObject, IWorker
     {
@@ -47,17 +47,17 @@ namespace MapNoReduce
 
         public void Init()
         {
-            Console.WriteLine(serviceURL);
+            //Console.WriteLine(serviceURL);
             if (isJobTracker)
             {
-                Console.WriteLine("Job Tracker");
+                //Console.WriteLine("Job Tracker");
                 AddWorker(this.id, this.serviceURL);
                 AddAvailableWorker(this.id, this.serviceURL);
             }
             else
             {
-                Console.WriteLine("NOT JT");
-                Console.WriteLine(entryURL);
+                //Console.WriteLine("NOT JT");
+                //Console.WriteLine(entryURL);
                 IWorker jobTracker = (IWorker)Activator.GetObject(
                     typeof(IWorker),
                     entryURL);
@@ -79,13 +79,13 @@ namespace MapNoReduce
 
             status = "Processing split";
 
-            Console.WriteLine();
-            Console.WriteLine("estou a processar um split");
+            //Console.WriteLine();
+            //Console.WriteLine("estou a processar um split");
 
             if (isJobTracker)
             {
                 RemoveAvailableWorker(this.id, this.serviceURL);
-                Console.WriteLine("sou job tracker");
+                //Console.WriteLine("sou job tracker");
             }
             else
             {
@@ -93,20 +93,20 @@ namespace MapNoReduce
                     typeof(IWorker),
                     entryURL);
                 jobTracker.RemoveAvailableWorker(this.id, this.serviceURL);
-                Console.WriteLine("nao sou job tracker");
+                //Console.WriteLine("nao sou job tracker");
             }
 
             IList<KeyValuePair<string, string>> result = new List<KeyValuePair<string, string>>();
 
-            Console.WriteLine("a contactar cliente");
+            //Console.WriteLine("a contactar cliente");
 
             IClient client = (IClient)Activator.GetObject(
                              typeof(IClient),
                              clientURL);
-            Console.WriteLine(clientURL);
+            //Console.WriteLine(clientURL);
 
-            Console.WriteLine("a obter split");
-            Console.WriteLine("split start {0}  ----- split end {1}", splitStart, splitEnd);
+            //Console.WriteLine("a obter split");
+            //Console.WriteLine("split start {0}  ----- split end {1}", splitStart, splitEnd);
 
             string split = client.GetSplitService(splitStart, splitEnd);
 
@@ -114,27 +114,38 @@ namespace MapNoReduce
 
             string[] delimitors = { "\n", "\r\n" };
 
-            Console.WriteLine("a fazer split do split");
+            //Console.WriteLine("a fazer split do split");
 
             string[] splitPart = split.Split(delimitors, StringSplitOptions.None);
 
-            Console.WriteLine("a entrar no ciclo para fazer o job");
-
+            //Console.WriteLine("a entrar no ciclo para fazer o job");
+            try
+            {
+                assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                Console.WriteLine("excepcao");
+                foreach (Exception inner in ex.LoaderExceptions)
+                {
+                    Console.WriteLine(inner.Message);
+                }
+            }
             foreach (string s in splitPart)
             {
-                Console.WriteLine(s);
+                //Console.WriteLine(s);
                 foreach (Type type in assembly.GetTypes())
                 {
-                    Console.WriteLine("primeiro if");
+                    //Console.WriteLine("primeiro if");
                     if (type.IsClass == true)
                     {
-                        Console.WriteLine("segunfo if");
+                        //Console.WriteLine("segunfo if");
                         if (type.FullName.EndsWith("." + mapClass))
                         {
-                            Console.WriteLine("terceiro if");
+                            //Console.WriteLine("terceiro if");
                             // create an instance of the object
                             object ClassObj = Activator.CreateInstance(type);
-                            Console.WriteLine("instancia criada");
+                            //Console.WriteLine("instancia criada");
                             // Dynamically Invoke the method
                             object[] args = new object[] { s }; //parse split 1 linha de cada vez
                             object resultObject = type.InvokeMember("Map",
@@ -142,20 +153,26 @@ namespace MapNoReduce
                                    null,
                                    ClassObj,
                                    args);
-                            Console.WriteLine("cena feita");
-                            Console.WriteLine();
+                            //Console.WriteLine("cena feita");
+                            //Console.WriteLine();
                             result = new List<KeyValuePair<string, string>>(result.Concat((IList<KeyValuePair<string, string>>)resultObject));
                         }
                     }
                 }
             }
 
-            Console.WriteLine("ja comi o split. vou gregar");
+            Console.WriteLine("results");
+            foreach (KeyValuePair<string, string> kvp in result)
+            {
+                Console.WriteLine(kvp.Key + " " + kvp.Value);
+            }
+
+            //Console.WriteLine("ja comi o split. vou gregar");
 
             //depois de tudo processado:
             client.SubmitResultService(result, splitNumber);
 
-            Console.WriteLine("greguei para cima do cliente");
+            //Console.WriteLine("greguei para cima do cliente");
 
 
             if (isJobTracker)
@@ -179,20 +196,20 @@ namespace MapNoReduce
             long splitStart = 0;
             long splitEnd = splitSize - 1;
 
-            Console.WriteLine("splitSize {0}", splitSize);
-            Console.WriteLine("fileSize {0}", fileSize);
+            //Console.WriteLine("splitSize {0}", splitSize);
+            //Console.WriteLine("fileSize {0}", fileSize);
 
 
             for (int i = 0; i < nSplits; i++)
             {
                 // bloqueia enquanto nao houver workers disponiveis
-                Console.WriteLine("entrei no ciclo");
+                //Console.WriteLine("entrei no ciclo");
 
                 while (availableWorkers.IsEmpty) { }
 
                 KeyValuePair<int, string> entry = availableWorkers.First();
 
-                Console.WriteLine("vou contactar o worker");
+                //Console.WriteLine("vou contactar o worker");
 
 
                 IWorker worker = (IWorker)Activator.GetObject(
@@ -201,7 +218,7 @@ namespace MapNoReduce
 
                 worker.ProcessSplit(splitStart, splitEnd, clientURL, mapClass, dll, i + 1);
 
-                Console.WriteLine("worker a processar");
+                //Console.WriteLine("worker a processar");
 
 
                 splitStart += splitSize;
@@ -210,7 +227,7 @@ namespace MapNoReduce
                 else
                     splitEnd += splitSize;
 
-                Console.WriteLine("a actualizar os splits e a recomecar");
+                //Console.WriteLine("a actualizar os splits e a recomecar");
 
             }
         }

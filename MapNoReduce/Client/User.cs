@@ -8,7 +8,7 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 
-namespace MapNoReduce
+namespace PADIMapNoReduce
 {
     class User
     {
@@ -91,7 +91,7 @@ namespace MapNoReduce
 
                     case("default"):
                         client.Init("tcp://localhost:30001/W");
-                        client.Submit(@"C:\padi\pl.txt", 2, @"C\:padi", "CharCountMapper", @"C:\padi\LibMapperCharCount.dll");
+                        client.Submit(@"C:\padi\pl.txt", 5, @"C:\padi", "ParadiseCountMapper", @"C:\padi\LibPADIMapNoReduce.dll");
                         break;
 
                     default:

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
-namespace MapNoReduce
+namespace PADIMapNoReduce
 {
 
     class ClientServices : MarshalByRefObject, IClient
@@ -72,11 +72,20 @@ namespace MapNoReduce
 
         public void SubmitResultService(IList<KeyValuePair<string, string>> mapResults, int splitNumber)
         {
-            string path = outputPath + Convert.ToString(splitNumber) + ".out";
+            string path = outputPath + @"\" + Convert.ToString(splitNumber) + ".out";
+           /* Debug.WriteLine("");
+            Debug.WriteLine("");
+            Debug.WriteLine(path);
+            Debug.WriteLine("");
+            Debug.WriteLine("");
+            FileStream fs = File.Create(@path);
+            fs.Close();*/
+
             StreamWriter sw = new StreamWriter(path);
             foreach (KeyValuePair<string, string> kvp in mapResults)
             {
                 sw.WriteLine(kvp.Key + " " + kvp.Value);
+                Debug.WriteLine(kvp.Key + " " + kvp.Value);
             }
 
             sw.Close();
