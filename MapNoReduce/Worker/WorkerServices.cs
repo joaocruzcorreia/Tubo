@@ -133,10 +133,10 @@ namespace PADIMapNoReduce
             }
             foreach (string s in splitPart)
             {
-                //Console.WriteLine(s);
+                Console.WriteLine(s);
                 foreach (Type type in assembly.GetTypes())
                 {
-                    //Console.WriteLine("primeiro if");
+                    Console.WriteLine("primeiro if");
                     if (type.IsClass == true)
                     {
                         //Console.WriteLine("segunfo if");
