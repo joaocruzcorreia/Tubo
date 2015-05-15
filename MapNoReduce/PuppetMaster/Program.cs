@@ -108,8 +108,10 @@ namespace PADIMapNoReduce
             }
            }
 
+            if (scriptQueue.Count == 0)
+                MessageBox.Show("mais nada a processar");
             string comand = scriptQueue.Dequeue();
-
+            
             cmdReader(comand);
 
         }

@@ -84,7 +84,7 @@ namespace PADIMapNoReduce
 
                             client.Submit(filePath, nSplits, outputPath, mapClass, dllPath);
 
-                            Console.WriteLine("Job Completed.");
+                            
                         }
                         else
                             Console.WriteLine("Must execute INIT command first.");
@@ -103,7 +103,9 @@ namespace PADIMapNoReduce
                     default:
                         Console.WriteLine("Not a valid command.");
                         break;
+                  
                 }
+                Console.WriteLine("Job Completed.");
             }
 
         }
