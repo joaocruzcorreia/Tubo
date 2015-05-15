@@ -30,15 +30,15 @@ namespace PADIMapNoReduce
             {
                 entryURL = args[0];
                 filePath = args[1];
-                outputPath = args[2];
-                nSplits = Convert.ToInt32(args[3]);
+                nSplits = Convert.ToInt32(args[2]);
+                outputPath = args[3];
                 mapClass = args[4];
                 dllPath = args[5];
-                UserCmd(client);
-
+                client.Init(entryURL);
+                client.Submit(filePath, nSplits, outputPath, mapClass, dllPath);
             }
-            else
-                UserCmd(client);
+
+            UserCmd(client);
 
         }
 
