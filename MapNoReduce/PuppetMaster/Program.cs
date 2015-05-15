@@ -21,6 +21,7 @@ namespace PADIMapNoReduce
         public static PuppetMaster pm = null;
         public static Queue<string> scriptQueue = new Queue<string>();
         public static bool wasLoaded = false;
+        private bool isUserCreated = false;
 
         public PuppetMaster()
         {
@@ -64,6 +65,11 @@ namespace PADIMapNoReduce
 
         public static void runUser(string[] comand)
         {
+            foreach (string s in comand)
+            {
+                Debug.WriteLine(s);
+            }
+
 
             string userPath = @"..\..\..\Client\bin\Debug\Client.exe";
 
@@ -114,10 +120,8 @@ namespace PADIMapNoReduce
 
         public static void cmdReader(String allInput)
         {
+
             string[] comand = allInput.Split(' ');
-
-            Console.WriteLine("0 = {0}", comand[0]);
-
 
             if (comand[0].Equals("WORKER"))
             {

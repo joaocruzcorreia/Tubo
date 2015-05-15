@@ -15,7 +15,7 @@ namespace PADIMapNoReduce
     class ClientServices : MarshalByRefObject, IClient
     {
         private string jobTrackerURL;
-        private int nSplits;   
+        private int nSplits;
         private string filePath;        
         private string outputPath;
 

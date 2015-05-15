@@ -109,8 +109,8 @@ namespace PADIMapNoReduce
             //Console.WriteLine("split start {0}  ----- split end {1}", splitStart, splitEnd);
 
             string split = client.GetSplitService(splitStart, splitEnd);
-         //   Console.WriteLine(split[0]);
-         //   Console.ReadLine();
+            //   Console.WriteLine(split[0]);
+            //   Console.ReadLine();
             Assembly assembly = Assembly.Load(dll);
 
             string[] delimitors = { "\n", "\r\n" };
@@ -120,7 +120,7 @@ namespace PADIMapNoReduce
             string[] splitPart = split.Split(delimitors, StringSplitOptions.None);
 
             //Console.WriteLine("a entrar no ciclo para fazer o job");
-   
+
             foreach (string s in splitPart)
             {
                 Console.WriteLine(s);
@@ -241,34 +241,36 @@ namespace PADIMapNoReduce
             //workersMap.AddOrUpdate(id, serviceURL, (k,v) => serviceURL);
             workersMap.TryAdd(id, serviceURL);
 
-            if(isJobTracker)
-            foreach (KeyValuePair<int, string> entry in workersMap)
-            {
-                if (entry.Key != this.id)
+            if (isJobTracker)
+                foreach (KeyValuePair<int, string> entry in workersMap)
                 {
-                    IWorker worker = (IWorker)Activator.GetObject(
-                        typeof(IWorker),
-                        entry.Value);
-                    worker.SetWorkersMap(this.workersMap);
+                    if (entry.Key != this.id)
+                    {
+                        IWorker worker = (IWorker)Activator.GetObject(
+                            typeof(IWorker),
+                            entry.Value);
+                        worker.SetWorkersMap(this.workersMap);
+                    }
                 }
- }
-            else{
-            IWorker jobTracker = (IWorker)Activator.GetObject(
-                       typeof(IWorker),
-                       Worker.jobTrackerURL);
-            jobTracker.AddWorker(id, serviceURL);
+            else
+            {
+                IWorker jobTracker = (IWorker)Activator.GetObject(
+                           typeof(IWorker),
+                           Worker.jobTrackerURL);
+                jobTracker.AddWorker(id, serviceURL);
+            }
         }
- }
         public void AddAvailableWorker(int id, string serviceURL)
         {
-             if(isJobTracker) 
-             availableWorkers.TryAdd(id, serviceURL);
-             else {
-                 IWorker jobTracker = (IWorker)Activator.GetObject(
-                       typeof(IWorker),
-                       Worker.jobTrackerURL);
-                 jobTracker.AddAvailableWorker(id, serviceURL);
-             }
+            if (isJobTracker)
+                availableWorkers.TryAdd(id, serviceURL);
+            else
+            {
+                IWorker jobTracker = (IWorker)Activator.GetObject(
+                      typeof(IWorker),
+                      Worker.jobTrackerURL);
+                jobTracker.AddAvailableWorker(id, serviceURL);
+            }
         }
 
         public void RemoveAvailableWorker(int id, string serviceURL)

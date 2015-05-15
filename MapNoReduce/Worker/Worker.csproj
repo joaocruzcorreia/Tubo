@@ -37,10 +37,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LibMapperCharCount">
-      <HintPath>..\..\..\..\..\..\..\padi\LibMapperCharCount.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\padi\LibMapperCharCount.dll</HintPath>
     </Reference>
     <Reference Include="LibMapperParadiseCount">
-      <HintPath>..\..\..\..\..\..\..\padi\LibMapperParadiseCount.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\padi\LibMapperParadiseCount.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
