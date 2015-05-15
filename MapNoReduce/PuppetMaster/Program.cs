@@ -51,6 +51,7 @@ namespace PADIMapNoReduce
             {
                 processInfo.Arguments = comand[1] + " " + comand[3];
                 jobTrackerURL = comand[3];
+                Debug.WriteLine(jobTrackerURL);
             }
             else if (comand.Length == 5)
             {
@@ -105,7 +106,7 @@ namespace PADIMapNoReduce
             foreach (string line in File.ReadLines(scriptPath))
             {
                 scriptQueue.Enqueue(line);
-            }
+            } 
            }
 
             if (scriptQueue.Count == 0)
