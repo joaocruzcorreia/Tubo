@@ -16,6 +16,7 @@ namespace PADIMapNoReduce
     public partial class Form1 : Form
     {
         private string fileName;
+        private bool IsChannelCreated = false;
 
         public Form1()
         {
@@ -86,9 +87,13 @@ namespace PADIMapNoReduce
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            if(!IsChannelCreated){
             TcpChannel channel = new TcpChannel(20001); //port
             ChannelServices.RegisterChannel(channel, false);
             RemotingServices.Marshal(new PuppetMaster(), "PM", typeof(IPuppetMaster));
+            IsChannelCreated = true;
+            }
+            
         }
 
         private void button2_Click(object sender, EventArgs e)

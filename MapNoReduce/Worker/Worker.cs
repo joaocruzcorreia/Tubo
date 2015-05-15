@@ -7,6 +7,7 @@ namespace PADIMapNoReduce
 {
     class Worker
     {
+     
         private static string status;
         static WorkerServices workerServices;
         public static string jobTrackerURL = null;
@@ -25,23 +26,26 @@ namespace PADIMapNoReduce
                 entryURL = args[2];
                 isJobTracker = false;
             }
-  
 
-            status = "Creating channel";
 
-            Uri sUri = new Uri(serviceURL);
-            workerServices = new WorkerServices(id, serviceURL, entryURL, isJobTracker, sUri.Port, status);
+       
+
+                status = "Creating channel";
+
+                Uri sUri = new Uri(serviceURL);
+                workerServices = new WorkerServices(id, serviceURL, entryURL, isJobTracker, sUri.Port, status);
+
+                //registo do worker
+                TcpChannel channel = new TcpChannel(sUri.Port); //port
+                ChannelServices.RegisterChannel(channel, false);
+                RemotingServices.Marshal(workerServices, "W", typeof(IWorker));
+
+                Console.WriteLine(sUri.Port);
+
+                workerServices.Init();
+
+                Console.ReadLine();
             
-            //registo do worker
-            TcpChannel channel = new TcpChannel(sUri.Port); //port
-            ChannelServices.RegisterChannel(channel, false);
-            RemotingServices.Marshal(workerServices, "W", typeof(IWorker));
-
-            Console.WriteLine(sUri.Port);
-
-            workerServices.Init();            
-            
-            Console.ReadLine();
         }
     }
 }

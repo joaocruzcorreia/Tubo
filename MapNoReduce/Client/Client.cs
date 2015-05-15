@@ -17,6 +17,7 @@ namespace PADIMapNoReduce
         private string jobTrackerURL;
         private static int port = 10001;
         private static string clientURL = "tcp://localhost:" + port + "/C";
+        bool isChannelCreated = false;
 
         private ClientServices clientServices = new ClientServices();
         private bool isChCreated = false;
@@ -27,13 +28,14 @@ namespace PADIMapNoReduce
             this.jobTrackerURL = entryURL;
             clientServices.JobTrackerURL = entryURL;
             
-            if (!isChCreated)
+            if (!isChannelCreated)
             {
                 TcpChannel channel = new TcpChannel(port);
                 ChannelServices.RegisterChannel(channel, false);
                 RemotingServices.Marshal(clientServices, "C", typeof(IClient));
-                isChCreated = true;
+                isChannelCreated = true;
             }
+            
         }
 
         public void Submit(string filePath, int nSplits, string outputPath, string mapClass, string dllPath)
