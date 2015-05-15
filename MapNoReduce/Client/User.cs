@@ -39,7 +39,7 @@ namespace PADIMapNoReduce
             }
             else
                 UserCmd(client);
-
+                
         }
 
         public static void UserCmd(Client client)
