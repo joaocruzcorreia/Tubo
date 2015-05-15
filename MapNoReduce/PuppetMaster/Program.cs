@@ -21,7 +21,6 @@ namespace PADIMapNoReduce
         public static PuppetMaster pm = null;
         public static Queue<string> scriptQueue = new Queue<string>();
         public static bool wasLoaded = false;
-        private bool isUserCreated = false;
 
         public PuppetMaster()
         {
