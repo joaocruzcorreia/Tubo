@@ -91,15 +91,6 @@ namespace PADIMapNoReduce
 
                         break;
 
-                    case ("default"):
-                        client.Init("tcp://localhost:30001/W");
-                        client.Submit(@"C:\padi\pl.txt", 2, @"C:\padi", "CharCountMapper", @"C:\padi\LibMapperCharCount.dll");
-                        break;
-                    case ("default1"):
-                        client.Init("tcp://localhost:30001/W");
-                        client.Submit(@"C:\padi\pl.txt", 2, @"C:\padi", "ParadiseCountMapper", @"C:\padi\LibMapperParadiseCount.dll");
-                        break;
-
                     default:
                         Console.WriteLine("Not a valid command.");
                         break;

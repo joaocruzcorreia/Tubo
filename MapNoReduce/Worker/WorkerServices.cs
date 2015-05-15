@@ -22,8 +22,10 @@ namespace PADIMapNoReduce
         private string entryURL; // apenas utilizado se o worker for jobTracker
         private bool isJobTracker;
         private string status;
-        private ConcurrentDictionary<int, string> workersMap = new ConcurrentDictionary<int, string>();
-        private ConcurrentDictionary<int, string> availableWorkers = new ConcurrentDictionary<int, string>();
+        private static ConcurrentDictionary<int, string> workersMap = new ConcurrentDictionary<int, string>();
+        //private static ConcurrentDictionary<int, string> availableWorkers = new ConcurrentDictionary<int, string>();
+        private static ConcurrentStack<string> availableWorkers = new ConcurrentStack<string>();
+        public static AutoResetEvent[] handles;
 
         public WorkerServices(int id, string serviceUrl, string entryUrl, bool isJobTracker, int port, string status)
         {
@@ -48,20 +50,9 @@ namespace PADIMapNoReduce
 
         public void Init()
         {
-            if (isJobTracker)
-            {
-                AddWorker(this.id, this.serviceURL);
-                AddAvailableWorker(this.id, this.serviceURL);
-            }
-            else
-            {
-                IWorker jobTracker = (IWorker)Activator.GetObject(
-                    typeof(IWorker),
-                    entryURL);
-                jobTracker.AddWorker(this.id, this.serviceURL);
-                jobTracker.AddAvailableWorker(this.id, this.serviceURL);
-                Console.WriteLine("added to workersMap and availableWorkers");
-            }
+            AddWorker(this.id, this.serviceURL);                
+            AddAvailableWorker(this.id, this.serviceURL);               
+            Console.WriteLine("added to workersMap and availableWorkers");
         }
 
 
@@ -73,23 +64,11 @@ namespace PADIMapNoReduce
 
         public void ProcessSplit(long splitStart, long splitEnd, string clientURL, string mapClass, byte[] dll, int splitNumber)
         {
-            IWorker jobTracker = null;
-
             status = "Processing split number " + splitNumber;
 
             Console.WriteLine(status);
 
-            if (isJobTracker)
-            {
-                RemoveAvailableWorker(this.id, this.serviceURL);
-            }
-            else
-            {
-                jobTracker = (IWorker)Activator.GetObject(
-                    typeof(IWorker),
-                    Worker.jobTrackerURL);
-                jobTracker.RemoveAvailableWorker(this.id, this.serviceURL);
-            }
+            //RemoveAvailableWorker(this.id, this.serviceURL);
 
             IList<KeyValuePair<string, string>> result = new List<KeyValuePair<string, string>>();
 
@@ -123,15 +102,13 @@ namespace PADIMapNoReduce
                         }
                     }
                 }
+
+                handles[this.id - 1].Set(); 
             }
 
             //depois de tudo processado:
             client.SubmitResultService(result, splitNumber);
-
-            if (isJobTracker)
-                AddAvailableWorker(this.id, this.serviceURL);
-            else
-                jobTracker.AddAvailableWorker(this.id, this.serviceURL);
+            AddAvailableWorker(this.id, this.serviceURL);
         }
 
 
@@ -148,22 +125,34 @@ namespace PADIMapNoReduce
             long splitSize = SplitSize(fileSize, nSplits);
             long splitStart = 0;
             long splitEnd = splitSize;
+            
+            handles = new AutoResetEvent[workersMap.Count];
+            for (int i = 0; i < handles.Length; i++ )
+                handles[i] = new AutoResetEvent(false);
+
+
 
             for (int i = 0; i < nSplits; i++)
             {
                 // bloqueia enquanto nao houver workers disponiveis
                 while (availableWorkers.IsEmpty) { }
 
-                KeyValuePair<int, string> entry = availableWorkers.First();
+         /*       KeyValuePair<int, string> entry = availableWorkers.First();
                 Console.WriteLine("Assigning job to worker id {0}", entry.Key);
                 IWorker worker = (IWorker)Activator.GetObject(
                     typeof(IWorker),
-                    entry.Value);
+                    entry.Value);*/
 
-                //Thread workerThread = new Thread(()=>worker.ProcessSplit(splitStart, splitEnd, clientURL, mapClass, dll, i + 1));
-                //workerThread.Start();
+                string workerURL = RemoveAvailableWorker();
+                //availableWorkers.TryPeek(out workerURL);
 
-                worker.ProcessSplit(splitStart, splitEnd, clientURL, mapClass, dll, i + 1);
+                Console.WriteLine("Assigning job to worker id {0}", workerURL);
+                IWorker worker = (IWorker)Activator.GetObject(
+                    typeof(IWorker),
+                    workerURL);
+
+                Thread workerThread = new Thread(()=>worker.ProcessSplit(splitStart, splitEnd, clientURL, mapClass, dll, i + 1));
+                workerThread.Start();
 
                 splitStart += splitSize;
                 if (splitEnd + splitSize > fileSize)
@@ -171,7 +160,14 @@ namespace PADIMapNoReduce
                 else
                     splitEnd += splitSize;
             }
-            //workerThread.Join();
+            WaitHandle.WaitAll(handles);
+        }
+
+        private string RemoveAvailableWorker()
+        {
+            string workerURL;
+            while(!availableWorkers.TryPop(out workerURL));
+            return workerURL;
         }
 
         // devolve o tamanho do split a ser utilizado
@@ -190,45 +186,17 @@ namespace PADIMapNoReduce
         public void AddWorker(int id, string serviceURL)
         {
             workersMap.TryAdd(id, serviceURL);
-
-            if (isJobTracker)
-                foreach (KeyValuePair<int, string> entry in workersMap)
-                {
-                    if (entry.Key != this.id)
-                    {
-                        IWorker worker = (IWorker)Activator.GetObject(
-                            typeof(IWorker),
-                            entry.Value);
-                        worker.SetWorkersMap(this.workersMap);
-                    }
-                }
-            else
-            {
-                IWorker jobTracker = (IWorker)Activator.GetObject(
-                           typeof(IWorker),
-                           Worker.jobTrackerURL);
-                jobTracker.AddWorker(id, serviceURL);
-            }
         }
         public void AddAvailableWorker(int id, string serviceURL)
         {
             Console.WriteLine("id {0}   serviceURL {1}", id, serviceURL);
-            if (isJobTracker)
-                availableWorkers.TryAdd(id, serviceURL);
-            else
-            {
-                IWorker jobTracker = (IWorker)Activator.GetObject(
-                      typeof(IWorker),
-                      Worker.jobTrackerURL);
-                jobTracker.AddAvailableWorker(id, serviceURL);
-            }
+            availableWorkers.Push(serviceURL);
         }
 
         public void RemoveAvailableWorker(int id, string serviceURL)
         {
-            availableWorkers.TryRemove(id, out serviceURL);
+            while(!availableWorkers.TryPop(out serviceURL));
         }
-
 
         public string GetWorkerURL(int id)
         {
@@ -238,39 +206,15 @@ namespace PADIMapNoReduce
                 return null;
         }
 
-        public void SetWorkersMap(ConcurrentDictionary<int, string> oldWorkersMap)
-        {
-            this.workersMap = oldWorkersMap;
-        }
-
         public void GetStatus()
         {
             Console.WriteLine("ID = {0} <-> serviceURL: {1} <-> isJobTracker: {2} <-> Status: {3}",
                 this.id, this.serviceURL, this.isJobTracker, this.status);
         }
 
-        public void GetWorkersStatus()
-        {
-            Console.WriteLine("ID");
-
-            foreach (KeyValuePair<int, string> entry in workersMap)
-            {
-                if (entry.Key != this.id)
-                {
-                    IWorker worker = (IWorker)Activator.GetObject(
-                    typeof(IWorker),
-                    entry.Value);
-                    worker.GetStatus();
-                }
-            }
-            GetStatus();
-        }
-
         public void Slow(int sec)
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

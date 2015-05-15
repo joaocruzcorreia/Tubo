@@ -26,7 +26,6 @@ namespace PADIMapNoReduce
         //job tracker methods 
         void SubmitJobToWorker(long fileSize, int nSplits, string clientURL, string mapClass, byte[] dll);
         void AddWorker(int id, string serviceURL);
-        void SetWorkersMap(ConcurrentDictionary<int, string> oldWorkersMap);
         void AddAvailableWorker(int id, string serviceURL);
         void RemoveAvailableWorker(int id, string serviceURL);
         string GetWorkerURL(int id);
@@ -34,7 +33,6 @@ namespace PADIMapNoReduce
 
         //puppet master commands
         void GetStatus(); //STATUS
-        void GetWorkersStatus(); //WORKERS STATUS
         void Slow(int sec); //SLOWW
        
     }
